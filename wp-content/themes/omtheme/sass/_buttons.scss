@@ -1,0 +1,11 @@
+@import 'variables';
+
+.btn-yellow {
+  background-color: $yellow;
+  color: $black;
+  font-family: 'Montserrat Regular' !important;
+  &:hover {
+    background-color: $dark-yellow;
+    color: $black;
+  }
+}
