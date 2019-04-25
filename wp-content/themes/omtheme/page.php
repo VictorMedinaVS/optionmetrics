@@ -12,7 +12,7 @@ get_header(); ?>
 		<div class="content-wrapper">
 			<div class="row">
 				<div class="<?php echo esc_attr( visualcomposerstarter_get_maincontent_block_class() ); ?>">
-					<div class="main-content">
+					<div class="main-content ">
 						<?php
 						// Start the loop.
 						while ( have_posts() ) : the_post();

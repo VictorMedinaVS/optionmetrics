@@ -342,7 +342,7 @@ function visualcomposerstarter_style() {
 
 	/* Bootstrap stylesheet */
 	wp_enqueue_style( 'bootstrap', get_template_directory_uri() . '/node_modules/bootstrap/dist/css/bootstrap.css', array(), '4.1.1', 'all' );
-	wp_enqueue_style( 'font-awesome', get_template_directory_uri() . '/node_modules/font-awesome/css/font-awesome.css', array(), '4.7.0', 'all' );
+	wp_enqueue_style( 'font-awesome', get_template_directory_uri() . '/node_modules/font-awesome/css/font-awesome.css', array(), '4.7.0', 'all' );	
 
 	/* Add Visual Composer Starter Font */
 	wp_register_style( 'visualcomposerstarter-font', get_template_directory_uri() . '/css/visual-composer-starter-font.min.css', array(), VISUALCOMPOSERSTARTER_VERSION );
@@ -409,6 +409,7 @@ function visualcomposerstarter_script() {
 	/* Slick Slider JS */
 	wp_register_script( 'slick-js', get_template_directory_uri() . '/js/slick/slick.min.js', array( 'jquery' ), '1.6.0', true );
 
+
 	/* Main theme JS functions */
 	wp_register_script( 'visualcomposerstarter-script', get_template_directory_uri() . '/js/functions.js', array( 'jquery' ), VISUALCOMPOSERSTARTER_VERSION, true );
 
@@ -422,6 +423,7 @@ function visualcomposerstarter_script() {
 	wp_enqueue_script( 'bootstrap-transition' );
 	wp_enqueue_script( 'bootstrap-collapser' );
 	wp_enqueue_script( 'slick-js' );
+	wp_enqueue_script( 'research' );
 	wp_enqueue_script( 'visualcomposerstarter-script' );
 }
 add_action( 'wp_enqueue_scripts', 'visualcomposerstarter_script' );
@@ -1767,3 +1769,1802 @@ function add_link_atts( $atts, $item, $args )
   return $atts;
 }
 add_filter( 'nav_menu_link_attributes', 'add_link_atts', 10, 3 );
+
+
+function vc_shortcode_carrousel_home ( $atts ){
+	$html = '<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">';
+  		$html = '<ol class="carousel-indicators home">';
+		    $args = array(
+		        'category_name'   => 'home-slider',
+		        'orderby'         => 'ID',
+		        'order'           => 'ASC',
+		        'tag_slug__in'    => array( 'home' )
+		    );
+		    $myposts = get_posts( $args );
+		    $count = count( $myposts );
+
+		    //var_dump($myposts);
+
+		    for( $i=0; $i<$count; $i++) :
+		        if( $i === 0 ) :
+		          $html .= '<li data-target="#carouselExampleIndicators" data-slide-to="' . $i . '" class="active d-none"></li>';
+		        else:
+		          $html .= '<li data-target="#carouselExampleIndicators" data-slide-to="' . $i . '" class="d-none"></li>';
+		        endif;
+		      endfor;
+  		$html .= '</ol>';
+		$html .= '<div class="carousel-inner" role="listbox">';
+		    for( $i=0; $i<$count; $i++) : setup_postdata( $myposts[$i] );
+		    	if ($i === 0) { $class = "active"; }  else { $class = ""; }
+		    	$img = 'http://localhost/optionmetrics/wp-content/uploads/2018/06/Background.jpg';
+		      	$html .= '<div class="carousel-item h100vh300 '.$class.' style="background-image: url('.$img.')">';
+		        $html .= '<div class="d-flex h-100 align-items-center justify-content-center">';
+		        	$html .= '<div class="carousel-caption position-static">';
+		            	$html .= '<p class="blender-pro-bold main-slider-title mb-5">'. $myposts[$i]->post_title .'</p>';
+		            	$html .= '<a class="btn btn-outline-light mb-3 btn-main-slider montserrat-light mr-md-3" href="/data-products/">View Products</a>';
+		            	$html .= '<a class="btn btn-yellow mb-3 btn-main-slider" href="/qualification-process/">Let’s Talk</a>';
+		          	$html .= '</div>';
+		          	$html .='<div class="btn-down-arrow"><a href="#why-option"><i class="fas fa-chevron-down"></i></a></div>';
+		        $html .= '</div>';
+		      $html .= '</div>';
+		    endfor; 
+		  $html .= '</div>';
+		  $html .= '<a class="carousel-control-prev d-none" href="#carouselExampleIndicators" role="button" data-slide="prev">';
+		    $html .= '<span class="fa fa-angle-left fa-3x"></span>';
+		    $html .= '<span class="sr-only">Previous</span>';
+		  $html .= '</a>';
+		  $html .= '<a class="carousel-control-next d-none" href="#carouselExampleIndicators" role="button" data-slide="next">';
+		    $html .= '<span class="fa fa-angle-right fa-3x"></span>';
+		    $html .= '<span class="sr-only">Next</span>';
+		  $html .= '</a>';
+		$html .= '</div>';
+
+
+
+
+	
+    return $html;
+
+
+}
+add_shortcode( 'my_vc_php_output', 'vc_shortcode_carrousel_home');
+
+
+function vc_shortcode_news_home ( $atts ){
+	$html = '<div class="row">';
+      	$html .= '<div class="col-12 px-lg-0">';
+        	$html .= '<div class="container bg-light-custom news-wrapper pb-0 px-lg-5">';
+          		$html .= '<div class="row">';
+            		$html .= '<div class="col-sm-12">';
+              			$html .= '<p class="section-title text-center mb-4">News & Events</p>';
+            		$html .= '</div>';
+            		$html .= '<div class="col-md-6">';
+            			//FEATURED
+							$args = array(
+							    'category_name'   => 'news-events',
+							    'orderby'         => 'rand',
+							    'showposts'       => 1,
+							    'tag_slug__in'    => array( 'featured' )
+  							);
+  							$ft_post = new WP_Query( $args );
+  								if( $ft_post->have_posts() ) :
+    								while( $ft_post->have_posts() ) :
+      									$ft_post->the_post();
+      									$html .= '<div class="text-right position-absolute post-date big pr-3 pt-2">';
+											$html .= '<span class="d-block h5 montserrat-light">'.get_the_date( 'M' ).'</span>';
+											$html .= '<span class="d-block montserrat-medium">'.get_the_date( 'Y' ).'</span>';
+										$html .= '</div>';
+										$html .= '<a href="'.home_url().'"/news-events/">';
+										$html .= '<img src="'.get_the_post_thumbnail_url().'" alt="Featured News And Events" class="img-fluid w-100 mb-3" />';
+										$html .= '</a>';
+										$html .= '<a href="'.home_url().'"/news-events/">';
+										  $html .= '<p class="text-blue montserrat-medium home-news-events-main">'.get_the_title().'</p>';
+										$html .= '</a>';
+										$html .= '<p class="text-grey lato-regular home-news-events-main mb-4">'.get_the_content().'</p>';
+										$html .= '<a class="text-blue-dark montserrat-medium mb-4 d-block" href="'.get_the_permalink().'">READ MORE';
+										    $html .= '<span class="fa fa-angle-double-right"></span>';
+										$html .= '</a>';
+									endwhile; 
+								endif;
+	           		$html .= '</div>';
+            		$html .= '<div class="col-md-6">';
+              			$html .= '<div class="row">';
+	                		//LAST FOUR
+	              			$tag = get_term_by( 'name', 'featured', 'post_tag' );
+	              			$args = array(
+	    						'category_name'   => 'news-events',
+	    						'orderby'         => 'date',
+	    						'order'           => 'DESC',
+	    						'showposts'       => 4,
+	    						'tag__not_in'     => array( $tag->term_id )
+	  						);											
+  							$news = new WP_Query( $args );
+  								if( $news->have_posts() ) :
+    								while( $news->have_posts() ) :
+      									$news->the_post();
+									  	$html .= '<div class="col-6 col-md-6 hide-show-more">';
+											$html .= '<div class="text-right position-absolute post-date pr-2 pt-2">';
+  												$html .= '<span class="d-block montserrat-light">'.get_the_date( 'M' ).'</span>';
+  												$html .= '<span class="d-block small montserrat-medium">'.get_the_date( 'Y' ).'</span>';
+											$html .= '</div>';
+									  		$html .= '<a href="'.home_url().'"/news-events/">';
+									    		$html .= '<img src="'.get_the_post_thumbnail_url().'" alt="News & Events News-Event-ID-'.get_the_ID().'" class="img-fluid w-100 mb-3">';
+									  		$html .= '</a>';
+									  		$html .= '<a href="'.home_url().'"/news-events/">';
+									  		  	$html .= '<p class="text-blue montserrat-medium home-news-events-last-four mb-1">'.get_the_title().'</p>';
+									  		$html .= '</a>';
+									  			$html .= '<p class="text-grey lato-regular home-news-events-last-four mb-5 mb-md-2 _content">'.get_the_content().'</p>';
+									  		$html .= '<a class="btn btn-link pl-0 mb-5 text-blue montserrat-medium d-none d-md-inline-block" href="'.home_url().'"/news-events/">READ MORE';
+									    		$html .= '<span class="fa fa-angle-double-right"></span>';
+									 		$html .= '</a>';
+									 	$html .= '</div>';
+									endwhile; 
+								endif;
+
+              			$html .= '</div>';
+            		$html .= '</div>';
+          		$html .= '</div>';
+        	$html .= '</div>';
+      	$html .= '</div>';
+    $html .= '</div>';
+
+    return $html;
+
+}
+add_shortcode( 'my_vc_php_output_news_home', 'vc_shortcode_news_home');
+
+
+function vc_shortcode_news_featured ( $atts ){
+    $html = '<div class="col-12 px-md-5 mb-5" id="events-offset">';
+        $args = array(
+    		'category_name'   => 'news-events',
+    		'orderby'         => 'rand',
+    		'showposts'       => 1,
+    		'tag_slug__in'    => array( 'featured' )
+  		);
+  		$ft_post = new WP_Query( $args );
+		if( $ft_post->have_posts() ) :
+    		while( $ft_post->have_posts() ) :
+      		$ft_post->the_post();
+      		$html .= '<div class="row d-flex align-items-center">';
+  				$html .= '<div class="col-12 text-center d-md-none">';
+    				$html .= '<p class="section-title text-blue montserrat-medium">Events</p>';
+				$html .= '</div>';
+  				$html .= '<div class="col-md-6 pl-4">';
+    				$html .= '<div class="text-right position-absolute post-date big pr-3 pt-2">';
+  					$html .= '<span class="d-block h5 montserrat-light">'.get_the_date( 'M' ).'</span>';
+  					$html .= '<span class="d-block montserrat-medium">'.get_the_date( 'Y' ).'</span>';
+				$html .= '</div>';
+   				$html .= '<img src="'.get_the_post_thumbnail_url().'" alt="Featured News And Events" class="img-fluid w-100 mb-3" />';
+	  			$html .= '</div>';
+				$html .= '<div class="col-md-6 text-center text-md-left">';
+				    $html .= '<p class="text-blue-dark montserrat-medium">'.get_the_title().'</p>';
+	    			$html .= '<p class="text-grey lato-regular">'.get_the_content().'</p>';
+    				$html .= '<a href="'.get_the_permalink().' class="btn btn-link montserrat-medium pl-0 text-blue-dark">READ MORE <span class="fa fa-angle-double-right"></span> </a>';
+  				$html .= '</div>';
+			$html .= '</div>';
+			endwhile; 
+		endif;         
+    $html .= '</div>';
+
+    return $html;
+}
+add_shortcode( 'my_vc_php_output_news_featured', 'vc_shortcode_news_featured');
+
+
+function vc_shortcode_events ( $atts ){
+	$events = get_term_by( 'name', 'events', 'post_tag' );
+  	$current_year = date('Y');
+  	$const = 2002;
+  	$args = array(
+    	'category_name'   => 'news-events',
+    	'orderby'         => 'date',
+    	'order'           => 'DESC',
+    	'tag__in'         => array( $events->term_id )
+  	);
+
+	if (isset($_GET['years'])) {
+	    $year_param = $_GET['years'];
+		$args['year'] = $year_param;
+	}
+
+  	$newsPosts = new WP_Query( $args );
+
+	$html = '<div class="col-12 col-md-5 mb-5" id="news-offset">';
+  		$html = '<div class="row">';
+    		$html .= '<div class="col-12 text-center">';
+      			$html .= '<p class="section-title text-blue montserrat-medium">Events</p>';
+    		$html .= '</div>';
+    		$html .= '<div class="col-12">';
+      			$html .= '<select class="om-select width-100" name="events-year-filter" id="events-year-filter">';
+        			$html .= '<option value="filter-by-year">Filter by year</option>';
+        				for ($i=$current_year; $i>=$const; $i--):
+          					$html .= '<option value="'.$i.'">'.$i.'</option>';
+        				endfor; 
+      				$html .= '</select>';
+      				$html .= '<table id="news">'; 
+        			$html .= '<thead><tr><th></th></tr></thead>';
+        			$html .= '<tbody>';
+          				if( $newsPosts->have_posts() ) :
+              				while( $newsPosts->have_posts() ) :
+                				$newsPosts->the_post();
+          							$html .= '<tr>';
+            							$html .= '<td>';
+              								$html .= '<div class="row">';
+                								$html .= '<div class="col px-1 hide-show-more py-3">';
+                  									$html .= '<p class="event-pub-title event-pub-label montserrat-bold mb-0">'.get_the_title().'</p>';
+                  									$html .= '<p class="event-pub-date event-pub-label montserrat-bold">'.get_the_date( 'F jS, Y' ).'</p>';
+                  									$html .= '<p class="event-pub-description event-pub-label lato-light mb-3 _content">'.get_the_content().'</p>';
+                  									$html .= '<a class="event-pub-read-more montserrat-medium" href="'.get_the_permalink().'">READ MORE<span class="fa fa-angle-double-right"></span></a>';
+                    							$html .='</div>';
+              								$html .='</div>';
+            							$html .='</td>';
+          							$html .='</tr>';
+          					endwhile;
+          				endif;
+        			$html .='</tbody>';
+      			$html .='</table>';
+    		$html .='</div>';
+  		$html .='</div>';
+	$html .='</div>';
+
+	/*$sc_args = '[wp-datatable id="news" fat="LEVEL"]
+	search: true,
+	responsive: true,
+	pageLength: 6,
+	lengthChange: false,
+	bInfo: false,
+	language: {
+	  search: "",
+	  searchPlaceholder: "Search Events...",
+	  paginate: {
+	    next: "<span class=\"fa fa-chevron-right\"></span>",
+	    previous: "<span class=\"fa fa-chevron-left\"></span>",
+	  }
+	},
+	[/wp-datatable]';
+    echo do_shortcode( $sc_args );*/
+
+  return $html;
+
+}
+add_shortcode( 'my_vc_php_output_events', 'vc_shortcode_events');
+
+
+
+
+
+
+
+function vc_shortcode_news ( $atts ){
+  $featured = get_term_by( 'name', 'featured', 'post_tag' );
+  $news = get_term_by( 'name', 'news', 'post_tag' );
+
+  $args = array(
+    'category_name'   => 'news-events',
+    'orderby'         => 'date',
+    'order'           => 'DESC',
+    'tag__not_in'     => array( $featured->term_id ),
+    'tag__in'         => array( $news->term_id )
+  );
+  $eventPosts = new WP_Query( $args );
+
+  	$html = '<div class="col-12 ">';
+  		$html .= '<div class="row">';
+    		$html .= '<div class="col-12 d-none d-md-block d-lg-none text-center">';
+      			$html .= '<p class="section-title text-blue montserrat-medium">News</p>'; 
+    		$html .= '</div>';
+    		$html .= '<div class="col-12 d-none d-lg-inline-block pl-4">';
+      			$html .= '<p class="section-title text-blue montserrat-medium position-relative">News</p>';
+    		$html .= '</div>';
+    		$html .= '<div class="col-12">';
+      			$html .= '<table id="events">';
+    				$html .= '<thead><tr><th></th></tr></thead>';
+    				$html .= '<tbody>';
+	      				if( $eventPosts->have_posts() ) :
+	          				while( $eventPosts->have_posts() ) :
+	            				$eventPosts->the_post();
+		      					$html .= '<tr>';
+			        				$html .= '<td>';
+			          					$html .= '<div class="row">';
+			            					$html .= '<div class="col-6 col-md-5">';
+			              						$html .= '<img src="'.get_the_post_thumbnail_url().'" alt="News & Events News-Event-ID-'.get_the_ID().'" class="img-fluid w-100 mb-3">';
+			            					$html .= '</div>';
+			            					$html .= '<div class="col-6 col-md-7 hide-show-more">';
+			              						$html .= '<p class="text-blue montserrat-bold news-mini mb-2">'.get_the_title().'</p>';
+			              						$html .= '<p class="text-grey-dark lato-regular news-mini mb-2 _content">'.get_the_content().'</p>';
+			              						$html .= '<a class="text-blue montserrat-medium" href="'.get_the_permalink().'"> READ MORE <span class="fa fa-angle-double-right"></span> </a>';
+			            					$html .= '</div>';
+			          					$html .= '</div>';
+			        				$html .= '</td>';
+		      					$html .= '</tr>';
+	      					endwhile;
+	      				endif;
+    				$html .= '</tbody>';
+  				$html .= '</table>';
+    		$html .= '</div>';
+  		$html .= '</div>';
+	$html .= '</div>'; 
+	/*$sc_args = '[wp-datatable id="events" fat="LEVEL"]
+    	search: true,
+    	responsive: true,
+    	pageLength: 4,
+    	lengthChange: false,
+    	bInfo: false,
+    	language: {
+      		search: "",
+      		searchPlaceholder: "Search News...",
+      		paginate: {
+        		next: "<span class=\"fa fa-chevron-right\"></span>",
+        		previous: "<span class=\"fa fa-chevron-left\"></span>",
+      		}
+    	}
+  	[/wp-datatable]';
+  	echo do_shortcode( $sc_args );*/
+
+  return $html;
+
+}
+add_shortcode( 'my_vc_php_output_news', 'vc_shortcode_news');
+
+
+function vc_shortcode_careers ( $atts ){
+
+		$html = '<div class="position-relative">';
+  			$html .= '<div class="position-absolute page-wrapper-up">';
+    			$html .= '<div class="container pt-3 p-lg-5 pb-4 bg-white">';
+      				$html .= '<div id="form-careers" class="py-5">';
+          				$html .= '<div class="text-center mx-auto">';
+            				$html .= '<p class="text-blue montserrat-bold mb-4 be-part-title">Be part of an exceptionally creative and intelligent team</p>';
+            				$html .= '<p class="text-black lato-light mb-4 be-part-description">OptionMetrics is hiring. Join developers, quants, and econometrics specialists with a passion for excellence in all things volatility to collaborate on proprietary data and analytics products for our distinguished client base of hedge fund managers, institutional investors, and academic institutions.</p>';
+				            $html .= '<p class="text-black lato-bold mb-4 be-part-description">We encourage true ownership over products and reward innovation. Take your career to new heights.</p>';
+
+            				$html .= '<div class="d-lg-none">';
+              					$html .= '<div class="m-auto about-us-form">';
+                					$html .= '<div class="form-group text-center lato-regular text-white">';
+                  						$html .= '<label for="exampleFormControlInput1">I’m interested in</label>';
+                  						$html .= '<select class="form-control" id="exampleFormControlInput1">';
+                    						$html .= '<option value="0">Choose Job Category</option>';
+                      							$jobs = new WP_Query( array( 'category_name' => 'careers' ) );
+                      								if( $jobs->have_posts() ) :
+                        								while( $jobs->have_posts() ) :
+                          									$jobs->the_post();
+                      											$html .= '<option value="'.get_the_permalink().'"'.get_the_title() . ' (' . get_post_meta(get_the_ID(), 'careers_location', true) . ')</option>';
+                    									endwhile; 
+                    								endif;
+                  						$html .= '</select>';
+                					$html .= '</div>';
+                					$html .= '<div class="form-group mb-0">';
+                 						$html .= '<button class="btn btn-warning montserrat-medium btn-block" id="search-job-mobile">Submit</button>';
+                					$html .= '</div>';
+            					$html .= '</div>';
+        					$html .= ' </div>';
+        					$html .= ' <div class="d-none d-lg-block mt-lg-5">';
+        						$html .= '<div class="form-inline justify-content-center">';
+            						$html .= '<div class="form-group text-center lato-regular text-white">';
+                						$html .= '<label for="exampleFormControlInput2" class="mr-4">I’m interested in</label>';
+                							$html .= '<select class="form-control" id="exampleFormControlSelect2">';
+                								$html .= '<option value="0">Choose Job Category</option>';
+                      								if( $jobs->have_posts() ) :
+                        								while( $jobs->have_posts() ) :
+                          									$jobs->the_post();
+                      											$html .= '<option value="'.get_the_permalink().'"'.get_the_title() . ' (' . get_post_meta(get_the_ID(), 'careers_location', true) . ')</option>';
+                    									endwhile; 
+                    								endif;
+                  							$html .= '</select>';
+                					$html .= '</div>';
+                					$html .= '<div class="form-group mb-0">';
+                  						$html .= '<button class="btn btn-yellow btn-block ml-4" style="height:38px;font-size:16px;" id="search-job-desktop">Submit</button>';
+                					$html .= '</div>';
+            					$html .= '</div>';
+        					$html .= '</div>';
+          				$html .= '</div>';
+      				$html .= '</div>';
+      				$html .= '<div class="text-center">';
+        				$html .= '<div class="col-12 p-0 py-5">';
+          					$html .= '<div id="carouselJobs" class="carousel slide" data-ride="carousel">';
+            					$html .= '<ol class="carousel-indicators blue jobs-indicators">';
+              						$i = 0;
+              							if( $jobs->have_posts() ) :
+                							while( $jobs->have_posts() ) :
+                  								$jobs->the_post();
+                  								if ($i == 0 ) { $clsb = 'active '; } else { $clsb = ''; }
+              										$html .= '<li data-target="#carouselJobs" data-slide-to="'.$i.'" '.$clsb.'style="margin-left:5px!important;margin-right:5px!important;"></li>';
+              									$i++; 
+              								endwhile; 
+              							endif;
+            					$html .= '</ol>';
+            						$html .= '<div class="carousel-inner" role="listbox">';
+              							$i = 0;
+                							if( $jobs->have_posts() ) :
+                  								while( $jobs->have_posts() ) :
+                    								$jobs->the_post();
+                    									if ($i == 0 ) { $cls = 'active '; } else { $cls = ''; }
+                											$html .= '<div class="carousel-item '.$cls.'">';
+                  										 		$html .= '<div class="col-md-6 offset-md-3">'.get_the_post_thumbnail( get_the_ID(), "", array( "class" => "attachment-full img-fluid w-100" ) ).'>';
+																	$html .= '<p class="montserrat-medium text-blue mt-2 mb-0">'.get_the_title().'</p>';
+                  	 												$html .= '<a href="'.get_the_permalink().'" class="btn btn-link montserrat-medium text-blue pl-md-0 o-50">SEE POSITION<span class="fa fa-angle-double-right"></span></a>';
+                  												$html .= '</div>';
+                											$html .= '</div>';
+              											$i++; 
+              									endwhile; 
+              								endif;
+            						$html .= '</div>';
+            						$html .= '<a class="carousel-control-prev text-jobs-indicators" href="#carouselJobs" role="button" data-slide="prev">';
+              							$html .= '<span class="fa fa-angle-left fa-3x position-absolute" aria-hidden="true"></span>';
+              							$html .= '<span class="sr-only">Previous</span>';
+            						$html .= '</a>';
+            						$html .= '<a class="carousel-control-next text-jobs-indicators" href="#carouselJobs" role="button" data-slide="next">';
+              							$html .= '<span class="fa fa-angle-right fa-3x position-absolute" aria-hidden="true"></span>';
+              							$html .= '<span class="sr-only">Next</span>';
+            						$html .= '</a>';
+          					$html .= '</div>';
+        				$html .= '</div>';
+      				$html .= '</div>';
+    			$html .= '</div>';
+			$html .= '</div>';
+		$html .= '</div>';
+
+  return $html;
+
+}
+add_shortcode( 'my_vc_php_output_careers', 'vc_shortcode_careers');
+
+add_action('wp_enqueue_scripts', 'ajax_filter_posts_scripts', 100);
+function ajax_filter_posts_scripts()
+{
+    // Enqueue script
+    // just enqueue as its already registered
+    wp_enqueue_script('afp_script1', '//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js', array('jquery'), '0.0.1', true);
+    wp_enqueue_script('afp_script2', '//cdn.datatables.net/plug-ins/1.10.19/sorting/date-uk.js', array('jquery'), '0.0.1', true);
+    wp_enqueue_script('afp_script', get_template_directory_uri() .'/js/research.js', array('jquery'), '0.0.1', true);
+    wp_enqueue_script('afp_script');
+    wp_localize_script('afp_script', 'afp_vars', array(
+            'afp_nonce' => wp_create_nonce('afp_nonce'), // Create nonce which we later will use to verify AJAX request
+            'afp_ajax_url' => admin_url('admin-ajax.php'),
+            'error' => __('Sorry, something went wrong. Please try again', 'reportabug'),
+        )
+    );
+
+
+}
+
+add_action('wp_ajax_filter_posts', 'ajax_filter_get_posts');
+add_action('wp_ajax_nopriv_filter_posts', 'ajax_filter_get_posts');
+
+
+//Get Posts Ajax
+function ajax_filter_get_posts($category)
+{
+
+    // Verify nonce
+    if (!isset($_POST['afp_nonce']) ||
+        !wp_verify_nonce($_POST['afp_nonce'], 'afp_nonce')
+    )
+        die('Permission denied');
+    if (isset($_POST['date'])) {
+        $year = $_POST['date'];
+    } else {
+        $year = '';
+    }
+
+    $tag = $_POST['stuff'];
+    $category = $_POST['taxonomy'];
+
+    $args = array(
+        'category_name' => $category,
+        'posts_per_page' => -1,
+        'hide_empty' => true,
+        'orderby' => 'publish_date',
+        'order' => 'DESC',
+        's' => '',
+        'tag_slug__in' => $tag,
+        'date_query' => array(array(
+            'year' => $year
+        ))
+    );
+    $the_query = new WP_Query ($args);
+    $post_id = get_the_id();
+    $post_array = array();
+    if ($the_query->have_posts()) :
+        ob_start();
+        while ($the_query->have_posts()) :
+            $the_query->the_post();
+
+            $title = get_the_title();
+            $post_date = get_the_date('F jS, Y');
+            $link = get_the_permalink();
+            $content = get_the_content();
+
+            if ($category == 'research') {
+                $html_post = '<p class="text-blue h6 montserrat-medium">' . $title . '</p>';
+                $html_post .= '<p class="text-grey-light lato-italic">' . $post_date . '</p>';
+                $html_post .= '<p class="_content lato-regular text-grey">' . get_the_content() . '</p>';
+                $html_post .= '<a href="' . $link . '" class="btn btn-link text-grey-light montserrat-regular mb-3">READ MORE<span class="fa fa-angle-double-right"></span></a>';
+            } else {
+                $html_post = '<div class="row">';
+                $html_post .= '<div class="col px-1 hide-show-more py-3">';
+                $html_post .= '<p class="event-pub-title event-pub-label montserrat-bold mb-0">' . $post_date . '</p>';
+                $html_post .= '<p class="event-pub-date event-pub-label montserrat-bold">' . $title . '</p>';
+                $html_post .= '<p class="event-pub-description event-pub-label lato-light mb-3 _content">' . $content . '</p>';
+                $html_post .= '<a class="event-pub-read-more montserrat-medium" href="' . $link . '">';
+                $html_post .= '    READ MORE';
+                $html_post .= '<span class="fa fa-angle-double-right"></span>';
+                $html_post .= '</a>';
+                $html_post .= '</div>';
+                $html_post .= '</div>';
+            }
+
+            $post_array[0] = $html_post;
+            //Inserting the date in UK format to sort by date with datatablesJS on Research.js file
+            $post_array['1'] = get_the_date('d/m/Y', get_the_id());
+            $dataSet[] = $post_array;
+        endwhile;
+        ob_get_clean();
+    else:
+        $html_post = '<div class="text-center"><p class="text-center"><i class="far fa-file"></i> <span>No Data Found</span></p></div>';
+        $post_array[0] = $html_post;
+        $post_array['1'] = get_the_date('d/m/Y', $post_id);
+        $dataSet[] = $post_array;
+    endif;
+
+    echo json_encode($dataSet);
+    wp_die();
+
+
+}
+
+
+function vc_shortcode_research ( $atts ){
+
+    $html = '<div class="row">';
+        $html .= '<div class="col-12 d-none d-md-block">';
+         	$html .= '<p class="our-most-research-title montserrat-bold">Our Most Recent Research</p>';
+        $html .= '</div>';
+        $html .= '<div class="col-12 col-md-7 d-md-none">';
+        	$html .= '<p class="text-blue lato-regular py-md-4 text-center" style="max-width:880px;">OptionMetrics data is an essential component of many studies performed by both academics and practitioners. Below is a partial list of academic papers that used OptionMetrics data:</p>';
+          		$html .= '<div class="text-center pt-3">';
+            		$html .= '<p class="montserrat-bold research-section-title mb-3" id="research-by-mobile">Research by:</p>';
+            			$html .= '<select class="om-select" name="type-of-research-select" id="type-of-research-select">';
+              				$html .= '<option data-toggle="tab" value="view-all">View All</option>';
+              				$html .= '<option data-toggle="tab" value="optionmetrics">Optionmetrics</option>';
+              				$html .= '<option data-toggle="tab" value="academics">Academics</option>';
+              				$html .= '<option data-toggle="tab" value="institutional">Institutional</option>';
+            			$html .= '</select>';
+	          		$html .= '</div>';
+        		$html .= '</div>';
+        		$html .= '<div class="col-12 px-4 pb-5 text-center hide-show-more d-md-none">';
+          			//get_template_part( 'partials/research', 'mobile' ); 
+        		$html .= '</div>'; 
+        		$html .= '<div class="col-12 px-4 d-none d-md-block hide-show-more text-center">';
+          			// RESEARCH FEATURED SECTION
+        			$args = array(
+						'category_name'   => 'research',
+						'orderby'         => 'rand',
+						'showposts'       => 1,
+						'tag_slug__in'    => array( 'featured' )
+					);
+					$ft_post = new WP_Query( $args );
+					if( $ft_post->have_posts() ) :
+						while( $ft_post->have_posts() ) :
+					  		$ft_post->the_post();
+							$html .= '<p class="text-blue h4 montserrat-regular mx-auto" style="max-width:700px;">'.get_the_title().'</p>';
+							$html .= '<p class="text-grey-light lato-italic text-center my-4">'.get_the_date( "F jS, Y" ).'</p>';
+							$html .= '<p id="research-top" class="lato-regular mx-auto px-md-0" style="max-width:1100px;">'.get_the_content().'<a class="text-blue-dark montserrat-medium ml-1" href="'.get_the_permalink().'"> READ MORE <span class="fa fa-angle-double-right"></span> </a> </p>';
+							$html .= '<a href="#papers-view" class="btn btn-yellow mt-3 mb-4" id="view-our-research-papers">View Our Research Papers</a>';
+						endwhile;
+					endif;
+        		$html .= '</div>';
+        		$html .= '<div class="col-12 col-lg-7 d-none d-md-block">';
+          			$html .= '<p class="research-essential-info lato-regular py-md-4" style="max-width:880px;">OptionMetrics data is an essential component of many studies performed by both academics and practitioners. Below is a partial list of academic papers that used OptionMetrics data:</p>';
+        		$html .= '</div>';
+        		$html .= '<div class="col-sm-7 d-none d-md-block hide-show-more pb-4">';
+        			$html .= '<p class="montserrat-bold research-section-title" id="research-by">Research by:</p>';
+          			$html .= '<nav>';
+            			$html .= '<div class="nav nav-tabs justify-content-between mb-5" id="nav-tab" role="tablist">';
+              				$html .= '<a class="nav-item research-nav-item first active" id="nav-tab-view-all" data-toggle="tab" role="tab" aria-controls="nav-view-all" aria-selected="true" name="view-all-research">View All</a>';
+              				$html .= '<a class="nav-item research-nav-item" id="nav-tab-optionmetrics" data-toggle="tab" role="tab" aria-controls="nav-optionmetrics" aria-selected="false" name="optionmetrics">Optionmetrics</a>';
+              				$html .= '<a class="nav-item research-nav-item" id="nav-tab-academics" data-toggle="tab" role="tab" aria-controls="nav-academics" aria-selected="false" name="academics-research">Academics</a>';
+              				$html .= '<a class="nav-item research-nav-item" id="nav-tab-institutional" data-toggle="tab" role="tab" aria-controls="nav-institutional" aria-selected="false" name="institutional">Institutional</a>';
+          		  		$html .= '</div>';
+          			$html .= '</nav>';
+          			//RESEARCH DESKTOP
+          			$featured = get_term_by('name', 'featured', 'post_tag');
+					$type_of_research = isset($_GET['type_of_research']) ? $_GET['type_of_research'] : 'view-all-research';
+					$args = array(
+    					'category_name' => 'research',
+    					'orderby' => 'publish_date',
+    					'order' => 'DESC',
+    					'tag__not_in' => $featured->term_id,
+    					'tag' => $type_of_research
+					);
+
+					if (isset($_GET['query_year'])) {
+					    $year = $_GET['query_year'];
+					    if (is_numeric($year)) {
+					        $args['date_query'] = array(array(
+					            'year' => $year
+					        ));
+					    }
+					}
+
+					$research_desktop = new WP_Query($args);
+					$html .= '<div id="papers-view">';
+        				$html .= '<table id="research-posts" class="display" style="width:100%">';
+
+        				$html .= '</table>';
+          			$html .= '</div>';
+        		$html .= '</div>';
+        		$html .= '<div class="col-12 col-md-5 pb-5">';
+          			//RESEARCH PAPPERS
+        			$args = array(
+    					'category_name'   => 'white-papers',
+    					'orderby'         => 'date',
+    					'order'           => 'DESC',
+    					'showposts'       => 3
+  					);
+  					$papers = new WP_Query( $args );
+
+					$html .= '<p class="montserrat-bold research-section-title">Top Research Papers</p>';
+					$html .= '<div class="bg-light p-3 mb-3">';
+    					$i = 1;
+    					if( $papers->have_posts() ) :
+      						while( $papers->have_posts() ) :
+        						$papers->the_post();
+        						$link = get_post_meta( get_the_ID(), 'white_papers_url', true );
+        							$html .= '<a href="<?php echo $link; ?>" target="_blank" class="text-blue montserrat-medium p-3 d-block">'.get_the_title().'</a>';
+    								if( $i < $papers->post_count ) :
+        								$html .= '<hr />';
+        							$i++;
+      								endif;
+      						endwhile;
+      					endif;
+      				$html .= '</div>';
+      				//RESEARCH YEARS
+      				$year_param = isset($_GET['query_year']) ? $_GET['query_year'] : 'all';
+  					$year = date('Y');
+  					$LAST = 2002;
+
+					$html .= '<p class="montserrat-bold research-section-title d-none d-sm-block mt-5">All Research Papers</p>';
+					$html .= '<div class="w-100 position-relative d-none d-sm-block" style="left:10px;">';
+					  	$html .= '<div class="timeline">';
+					  	if ($year_param == 'all') { $clsa = 'active'; } else { $clsa = ''; }
+					    $html .= '<div class="entry '.$clsa.'">';
+					      	$html .= '<p class="d-inline timeline-year montserrat-light text-blue '.$clsa.'" data-year="all" style="cursor:pointer">All years</p> </div>';
+					    	for ($i=$year; $i>=$LAST; $i--):
+					    		if ($i == $year_param) { $cls = 'active'; } else { $cls = ''; }
+					    		$html .= '<div class="entry '.$cls.'">';
+					      			$html .= '<p class="d-inline timeline-year montserrat-light text-blue '.$cls.'" data-year="'.$i.'" style="cursor:pointer">'.$i.'</p>';
+					    		$html .= '</div>';
+					    	endfor;
+					    $html .= '</div>';
+					$html .= '</div>';
+        		$html .= '</div>';
+        		$html .= '<div class="col-12 pb-5">';
+          			$html .= '<div class="col-12">';
+            			$html .= '<p class="section-title text-center my-0">Some of our Clients</p>';
+          			$html .= '</div>';
+          			$html .= '<div class="col-12">';
+          				do_shortcode( '[jssor-slider alias="carousel-slider.slider"]' );
+          			$html .= '</div>';
+        		$html .= '</div>';
+    	$html .= '</div>';
+	$html .= '</div>';
+
+
+	return $html;
+
+}
+add_shortcode( 'my_vc_php_output_research', 'vc_shortcode_research');
+
+
+
+
+function vc_shortcode_about_us ( $atts ){
+
+
+   	$html = '<div class="row">';
+        $html .= '<div class="pt-4 pb-0 col-md-6 pr-md-2 pl-md-5 pt-md-5 col-lg-4">';
+          	$html .= '<div class="row">';
+            	$html .= '<div class="col-md-3 text-center">';
+            		$html .= '<img src="'.home_url('wp-content/uploads/2019/04/Common_language_icon.png').'" alt="Common Language" class="img-fluid w-md-100 pb-4" />';
+            	$html .= '</div>';
+           		$html .= '<div class="col-md-9 text-center text-md-left pl-md-0">';
+          			$html .= '<div class="row">';
+               			$html .= '<div class="col-12">';
+               				$html .= '<p class="text-blue p montserrat-medium mb-4">We use a common language all practitioners understand</p>';
+               			$html .= '</div>';
+               			$html .= '<div class="col-12">';
+         	    			$html .= '<p class="text-grey lato-regular p">Black-Scholes-Merton implied volatilities are standard for quoting options prices. Differences across delta (smile or skew) and across time-to-expiration (term structure) provide ample fodder for investigating arbitrage and relative value opportunities.</p>';
+               			$html .= '</div>';
+          			$html .= '</div>';
+           		$html .= '</div>';
+        	$html .= '</div>';
+    	$html .= '</div>';
+	    $html .= '<div class="pt-4 pb-0 col-md-6 pr-md-5 pl-md-2 pt-md-5 col-lg-4 pr-lg-2">';
+	        $html .= '<div class="row">';
+	            $html .= '<div class="col-md-3 text-center pr-md-0"><img src="'.home_url('wp-content/uploads/2019/04/Replicate_icon.png').'" alt="Replicate" class="img-fluid w-md-100 pb-4" /></div>';
+	            $html .= '<div class="col-md-9 text-center text-md-left pl-md-0">';
+	            	$html .= '<div class="row">';
+	                	$html .= '<div class="col-12">';
+	                  		$html .= '<p class="text-blue p montserrat-medium mb-4">Replicate and extend studies with full confidence.</p>';
+	                	$html .= '</div>';
+	                	$html .= '<div class="col-12">';
+	                  		$html .= '<p class="text-grey lato-regular p">Our data is the industry standard across academic and industry research that involves options data, from trading strategy research to corporate finance.<br/>Currently, over 300 institutional subscribers and universities rely on OptionMetrics.</p>';
+	                	$html .= '</div>';
+	              	$html .= '</div>';
+	            $html .= '</div>';
+	        $html .= '</div>';
+	    $html .= '</div>';
+	    $html .= '<div class="pt-4 pb-0 col-md-6 pr-md-2 pl-md-5 pt-md-5 col-lg-4 pl-lg-2 pr-lg-5">';
+	        $html .= '<div class="row">';
+	            $html .= '<div class="col-md-3 text-center pr-md-0"><img src="'.home_url('wp-content/uploads/2019/04/InControl_icon.png').'" alt="In Control" class="img-fluid w-md-100 pb-4" /></div>';
+	            $html .= '<div class="col-md-9 text-center text-md-left pl-md-0">'; 
+	            	$html .= '<div class="row">';
+	                	$html .= '<div class="col-12">'; 
+	                  		$html .= '<p class="text-blue p montserrat-medium mb-4">You are in control.</p>';
+	                	$html .= '</div>';
+	                	$html .= '<div class="col-12">';
+	                  		$html .= '<p class="text-grey lato-regular p">Our products allow you to backtest trading strategies, evaluate risk models, and perform sophisticated research on all aspects of option investment.</p>';
+	                	$html .= '</div>';
+	              	$html .= '</div>';
+	            $html .= '</div>';
+	        $html .= '</div>';
+	    $html .= '</div>';
+	    $html .= '<div class="pt-4 pb-0 col-md-6 pr-md-5 pl-md-2 pt-md-5 col-lg-4 pl-lg-5 pr-lg-2">';
+	        $html .= '<div class="row">';
+	            $html .= '<div class="col-md-3 text-center">';
+	            	$html .= '<img src="'.home_url('wp-content/uploads/2019/04/Methodology_icon.png').'" alt="Methodology" class="img-fluid w-md-100 pb-4" />';
+	            $html .= '</div>';
+	            $html .= '<div class="col-md-9 text-center text-md-left pl-md-0">';
+	            	$html .= '<div class="row">';
+	                	$html .= '<div class="col-12">';
+	                  		$html .= '<p class="text-blue p montserrat-medium mb-4">Completely transparent methodology.</p>';
+	                	$html .= '</div>';
+	                	$html .= '<div class="col-12">';
+	                  		$html .= '<p class="text-grey lato-regular">Our documentation explains exactly how our calculations work with enough detail to allow replication for spot checking. Additionally, all the raw data used is included with a subscription.</p>';
+	                	$html .= '</div>';
+	              	$html .= '</div>';
+	            $html .= '</div>';
+	        $html .= '</div>';
+	    $html .= '</div>';
+	    $html .= '<div class="pt-4 pb-0 col-md-6 pl-md-5 pr-md-2 pt-md-5 col-lg-4 pl-lg-2 pr-lg-2">';
+	        $html .= '<div class="row">';
+	            $html .= '<div class="col-md-3 text-center pr-md-0">';
+	              	$html .= '<img src="'.home_url('wp-content/uploads/2019/04/OurData_icon.png').'" alt="Our Data" class="img-fluid w-md-100 pb-4" />';
+	            $html .= '</div>';
+	            $html .= '<div class="col-md-9 text-center text-md-left pl-md-0">';
+	              	$html .= '<div class="row">';
+	                	$html .= '<div class="col-12">';
+	                  		$html .= '<p class="text-blue p montserrat-medium mb-4">Our data is independent and completely based on traded instruments and exchange data.</p>';
+	                	$html .= '</div>';
+	                	$html .= '<div class="col-12">';
+	                  		$html .= '<p class="text-grey lato-regular">We do not use input from market makers or brokers, and we are not affiliated with any bank, exchange or data vendor.</p>';
+	                	$html .= '</div>';
+	              	$html .= '</div>';
+	            $html .= '</div>';
+	        $html .= '</div>';
+	    $html .= '</div>';
+	    $html .= '<div class="pt-4 pb-0 col-md-6 pl-md-2 pr-md-5 pt-md-5 col-lg-4 pl-lg-2">';
+	        $html .= '<div class="row">';
+	            $html .= '<div class="col-md-3 text-center pr-md-0">';
+	              	$html .= '<img src="'.home_url('wp-content/uploads/2019/04/Host_icon.png').'" alt="Host" class="img-fluid w-md-100 pb-4" />';
+	            $html .= '</div>';
+	            $html .= '<div class="col-md-9 text-center text-md-left pl-md-0">';
+	              	$html .= '<div class="row">';
+	                	$html .= '<div class="col-12">';
+	                  		$html .= '<p class="text-blue p montserrat-medium mb-4">Host and access data to suit your needs.</p>';
+	                	$html .= '</div>';
+	                	$html .= '<div class="col-12">';
+	                  		$html .= '<p class="text-grey lato-regular">Access is not tied to any particular API or tool. Users can choose to use an SQL server database and we include utilities to help set this up.</p>';
+	                	$html .= '</div>';
+	              	$html .= '</div>';
+	            $html .= '</div>';
+	        $html .= '</div>';
+	    $html .= '</div>';
+    $html .= '</div>';
+    $html .= '<div class="col-12 mt-5 mb-4 text-center">';
+        $html .= '<a class="btn btn-yellow btn-main-slider" href="/qualification-process/">Get Started Now!</a>';
+    $html .= '</div>';
+    $html .= '<div class="mb-5" id="leaderships">';
+        $html .= '<div class="row px-lg-5 mx-lg-5">';
+          	$html .= '<div class="col-12">';
+            	$html .= '<p class="section-title text-center mb-5 mt-5">Leadership</p>';
+          	$html .= '</div>';
+          	$html .= '<div class="col-12 d-lg-none">';
+            	$html .= '<div id="carouselPartners" class="carousel slide" data-ride="carousel">';
+              		$html .= '<ol class="carousel-indicators blue partners-indicators">';
+                		$html .= '<li data-target="#carouselPartners" data-slide-to="0" class="active"></li>';
+                		$html .= '<li data-target="#carouselPartners" data-slide-to="1"></li>';
+              		$html .= '</ol>';
+              		$html .= '<div class="carousel-inner" role="listbox">';
+                		$html .= '<div class="carousel-item active text-center">';
+                  			$html .= '<img src="'.home_url('wp-content/uploads/2019/04/David_photo_on.png').'" alt="David" />';
+                  			$html .= '<div class="arrow-up mt-5 mx-auto"></div>';
+              				$html .= '<div class="partner-wrapper">';
+                				$html .= '<p class="text-blue montserrat-medium h5">David J. Hait, Ph.D.</p>';
+                				$html .= '<p class="text-blue montserrat-medium font-italic small">CEO AND FOUNDER</p>';
+                				$html .= '<p class="text-grey lato-regular">David J. Hait, Ph.D. is the CEO of OptionMetrics, LLC, which he founded in 1999. Dr. Hait is a financial economist with over 20 years of experience in applied quantitative derivative research and technology. Prior to founding OptionMetrics he served as Vice President in the Fixed Income Research Group at Paine Webber, and taught courses on derivatives at J. P. Morgan. Dr. Hait received his Ph.D. in Finance from New York University’s Stern School of Business, where he was an Adjunct Professor at the Stern School of Business and Courant Institute of Mathematics. Dr. Hait also received an MS in Computer Science from University of California at Berkeley and a BSE in Computer Engineering from the University of Pennsylvania.</p>';
+              				$html .= '</div>';
+                		$html .= '</div>';
+                		$html .= '<div class="carousel-item text-center">';
+                  			$html .= '<img src="'.home_url('wp-content/uploads/2019/04/photo_eran_on.png').'" alt="Eran" />';
+                  			$html .= '<div class="arrow-up mt-5 mx-auto"></div>';
+                  				$html .= '<div class="partner-wrapper">';
+                    				$html .= '<p class="text-blue montserrat-medium h5">Eran Steinberg</p>';
+                    				$html .= '<p class="text-blue montserrat-medium font-italic small">COO AND CHIEF OF STAFF</p>';
+                    				$html .= '<p class="text-grey lato-regular">Eran is a seasoned sales executive with close to 20 years of financial industry experience. Prior to joining OptionMetrics, Eran spent 13 years at Capital IQ, a leading global provider of public and private capital market data applications, helping it grow from its earliest days through and beyond its eventual acquisition by Standard & Poor’s (now S&P Global), finishing as Head of Account Management for all of the Americas. Prior to S&P Eran spent close to a decade working in for profit education for Kaplan Test Prep and then briefly for ALFY, a start-up focused on designing a subscription-based educational gaming site for young children. Eran received a Bachelor of Science in Management from Binghamton University (SUNY), and a J.D. from the Benjamin N. Cardozo School of Law (Yeshiva University).</p>';
+                  				$html .= '</div>';
+                			$html .= '</div>';
+              			$html .= '</div>';
+              			$html .= '<a class="carousel-control-prev" href="#carouselPartners" role="button" data-slide="prev">';
+                			$html .= '<span class="fa fa-angle-left fa-3x text-grey position-absolute" style="top:50px;" aria-hidden="true"></span>';
+                			$html .= '<span class="sr-only">Previous</span>';
+              			$html .= '</a>';
+              			$html .= '<a class="carousel-control-next" href="#carouselPartners" role="button" data-slide="next">';
+                			$html .= '<span class="fa fa-angle-right fa-3x text-grey position-absolute" style="top:50px;" aria-hidden="true"></span>';
+                			$html .= '<span class="sr-only">Next</span>';
+              			$html .= '</a>';
+            		$html .= '</div>';
+          		$html .= '</div>';
+          		$html .= '<div class="col-lg-6 d-none d-lg-inline-block text-center">';
+            		$html .= '<img src="'.home_url('wp-content/uploads/2019/04/David_photo_on.png').'" alt="David" class="img-fluid partner-img david active" />';
+          		$html .= '</div>';
+          		$html .= '<div class="col-lg-6 d-none d-lg-inline-block text-center">';
+            		$html .= '<img src="'.home_url('wp-content/uploads/2019/04/photo_eran_on.png').'" alt="Eran" class="img-fluid partner-img eran" />';
+          		$html .= '</div>';
+          		$html .= '<div class="col-12 d-none partner eran px-xl-0">';
+            		$html .= '<div class="arrow-up mt-70 ml-eran"></div>';
+            			$html .= '<div class="partner-wrapper">';
+              				$html .= '<p class="text-blue montserrat-medium h5 pl-5">Eran Steinberg</p>';
+              				$html .= '<p class="text-blue montserrat-medium font-italic small pl-5">COO AND CHIEF OF STAFF</p>';
+              				$html .= '<p class="text-grey lato-regular px-5">Eran is a seasoned sales executive with close to 20 years of financial industry experience. Prior to joining OptionMetrics, Eran spent 13 years at Capital IQ, a leading global provider of public and private capital market data applications, helping it grow from its earliest days through and beyond its eventual acquisition by Standard & Poor’s (now S&P Global), finishing as Head of Account Management for all of the Americas. Prior to S&P Eran spent close to a decade working in for profit education for Kaplan Test Prep and then briefly for ALFY, a start-up focused on designing a subscription-based educational gaming site for young children. Eran received a Bachelor of Science in Management from Binghamton University (SUNY), and a J.D. from the Benjamin N. Cardozo School of Law (Yeshiva University).</p>';
+			            $html .= '</div>';
+          			$html .= '</div>';
+          		$html .= '<div class="col-12 d-none d-lg-inline-block partner david px-xl-0">';
+            		$html .= '<div class="arrow-up mt-70 ml-david"></div>';
+            		$html .= '<div class="partner-wrapper">';
+              			$html .= '<p class="text-blue montserrat-medium h5 pl-5">David J. Hait, Ph.D.</p>';
+              			$html .= '<p class="text-blue montserrat-medium font-italic small pl-5">CEO AND FOUNDER</p>';
+              			$html .= '<p class="text-grey lato-regular px-5">David J. Hait, Ph.D. is the CEO of OptionMetrics, LLC, which he founded in 1999. Dr. Hait is a financial economist with over 20 years of experience in applied quantitative derivative research and technology. Prior to founding OptionMetrics he served as Vice President in the Fixed Income Research Group at Paine Webber, and taught courses on derivatives at J. P. Morgan. Dr. Hait received his Ph.D. in Finance from New York University’s Stern School of Business, where he was an Adjunct Professor at the Stern School of Business and Courant Institute of Mathematics. Dr. Hait also received an MS in Computer Science from University of California at Berkeley and a BSE in Computer Engineering from the University of Pennsylvania.</p>';
+	            $html .= '</div>';
+          	$html .= '</div>';
+        $html .= '</div>';
+    $html .= '</div>';
+
+	return $html;
+
+}
+add_shortcode( 'my_vc_php_output_about_us', 'vc_shortcode_about_us');
+
+
+
+
+function vc_shortcode_data_products ( $atts ){
+
+
+    $html = '<div class="row d-md-none">';
+      	$html .= '<div class="col-12 text-center">';
+        	$html .= '<p class="section-title text-blue montserrat-regular">Data Analysis Products</p>';
+      	$html .= '</div>';
+    $html .= '</div>';
+    $html .= '<div class="row">';
+      	$html .= '<div class="col-12 px-4">';
+        	//MAPS
+      		$html .= '<div class="row d-flex align-items-center">';
+  				$html .= '<div class="col-md-5 col-lg-6 col-xl-7 mb-5">';
+    				$html .= '<img src="'.home_url('wp-content/uploads/2019/04/map_us.png').'" alt="Map" class="img-fluid map us">';
+    				$html .= '<img src="'.home_url('wp-content/uploads/2019/04/map_canada.png').'" alt="Map" class="img-fluid map canada d-none">';
+    				$html .= '<img src="'.home_url('wp-content/uploads/2019/04/map_europe.png').'" alt="Map" class="img-fluid map europe d-none">';
+    				$html .= '<img src="'.home_url('wp-content/uploads/2019/04/map_asia.png').'" alt="Map" class="img-fluid map asia d-none">';
+    				$html .= '<img src="'.home_url('wp-content/uploads/2019/04/map_global.png').'" alt="Map" class="img-fluid map global d-none">';
+  				$html .= '</div>';
+  				$html .= '<div class="col-md-7 col-lg-6 col-xl-5 maps-nav-items-container">';
+    				$html .= '<nav>';
+      					$html .= '<div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist" style="margin-bottom: 20px;">';
+        					$html .= '<a class="nav-item nav-link maps-main-nav-items active" id="nav-tab-ivydb" data-toggle="tab" href="#nav-ivydb" role="tab" aria-controls="nav-ivydb" aria-selected="true" name="ivy">IvyDB</a>';
+        					$html .= '<a class="nav-item nav-link maps-main-nav-items" id="nav-tab-optigraph" data-toggle="tab" href="#nav-optigraph" role="tab" aria-controls="nav-optigraph" aria-selected="false" name="optigraph">OptiGraph</a>';
+      					$html .= '</div>';
+    				$html .= '</nav>';
+    				$html .= '<div class="tab-content" id="nav-tabContent">';
+      					$html .= '<div class="tab-pane fade show active" id="nav-ivydb" role="tabpanel" aria-labelledby="nav-ivydb-tab">';
+        					$html .= '<nav>';
+          						$html .= '<div class="nav nav-tabs" id="nav-tab-country" role="tablist" style="border:none!important;margin-bottom:10px;">';
+            						$html .= '<a class="nav-item nav-link active nav-item-country US-button" id="nav-tab-country-us" data-toggle="tab" data-country="us" href="#nav-us" role="tab" aria-controls="nav-us" aria-selected="true">US</a>';
+            						$html .= '<a class="nav-item nav-link nav-item-country US-button" id="nav-tab-country-europe" data-toggle="tab" data-country="europe" href="#nav-europe" role="tab" aria-controls="nav-europe" aria-selected="true">Europe</a>';
+            						$html .= '<a class="nav-item nav-link nav-item-country US-button" id="nav-tab-country-asia" data-toggle="tab" data-country="asia" href="#nav-asia" role="tab" aria-controls="nav-asia" aria-selected="false">Asia</a>';
+            						$html .= '<a class="nav-item nav-link nav-item-country US-button" id="nav-tab-country-canada" data-toggle="tab" data-country="canada" href="#nav-canada" role="tab" aria-controls="nav-canada" aria-selected="false">Canada</a>';
+            						$html .= '<a class="nav-item nav-link nav-item-country US-button" id="nav-tab-country-global" data-toggle="tab" data-country="global" href="#nav-global" role="tab" aria-controls="nav-global" aria-selected="false">Global Indices</a>';
+          						$html .= '</div>';
+        					$html .= '</nav>';
+        					$html .= '<div class="tab-content" id="nav-tab-countryContent">';
+          						$html .= '<div class="tab-pane show active" id="nav-us" role="tabpanel">';
+            						$html .= '<p class="section-text">Since its launch in 2002, the IvyDB US database has been the industry standard for historical option prices and implied volatility data. Used by over 300 institutions, IvyDB contains accurate end-of-day prices for options along with their correctly calculated implied volatilities and greeks. With IvyDB, you’ll be able to evaluate risk models, test trading strategies, and perform sophisticated research on all aspects of the options markets.</p>';
+          						$html .= '</div>';
+          						$html .= '<div class="tab-pane show" id="nav-canada" role="tabpanel">';
+            						$html .= '<p class="section-text">IvyDB Canada was launched in 2011, following the successes of its regional counterparts, IvyDB US, Europe, and Asia. Used by over 300 institutions, OptionMetrics’ IvyDB products contain accurate end-of-day prices for options along with their correctly calculated implied volatilities and greeks. With IvyDB, you’ll be able to evaluate risk models, test trading strategies, and perform sophisticated research on all aspects of the options markets.</p>';
+          						$html .= '</div>';
+          						$html .= '<div class="tab-pane show" id="nav-europe" role="tabpanel">';
+            						$html .= '<p class="section-text">Following the success of its US counterpart, IvyDB Europe was launched in 2008. It has since become the industry standard for historical option prices and implied volatility data in the European markets. Used by over 300 institutions, IvyDB contains accurate end-of-day prices for options along with their correctly calculated implied volatilities and greeks. With IvyDB, you’ll be able to evaluate risk models, test trading strategies, and perform sophisticated research on all aspects of the options markets.</p>';
+          						$html .= '</div>';
+          						$html .= '<div class="tab-pane show" id="nav-asia" role="tabpanel">';
+            						$html .= '<p class="section-text">Since its launch in 2010, IvyDB Asia has brought much-needed transparency of option prices and implied volatility data in the Asian markets. Used by over 300 institutions, OptionMetrics’ IvyDB products contain accurate end-of-day prices for options along with their correctly calculated implied volatilities and greeks. With IvyDB, you’ll be able to evaluate risk models, test trading strategies, and perform sophisticated research on all aspects of the options markets.</p>';
+								$html .= '</div>';
+          						$html .= '<div class="tab-pane show" id="nav-global" role="tabpanel">';
+            						$html .= '<p class="section-text">Following the success of its regional counterparts (IvyDB US, Europe, Asia, and Canada), IvyDB Global Indices was launched in 2011. Used by over 300 institutions, OptionMetrics’ IvyDB products contain accurate end-of-day prices for options along with their correctly calculated implied volatilities and greeks. With IvyDB, you’ll be able to evaluate risk models, test trading strategies, and perform sophisticated research on all aspects of the options markets.</p>';
+					            $html .= '</div>';
+        					$html .= '</div>';
+      					$html .= '</div>';
+      					$html .= '<div class="tab-pane fade" id="nav-optigraph" role="tabpanel" aria-labelledby="nav-optigraph-tab">';
+        					$html .= '<p class="section-text">Optigraph is a flexible and fast charting tool for graphing realized and implied volatility data on all US optionable securities, including indices. Users can quickly view volatility patterns going as far back as 1996 and compare vols across securities.<br/><br/>';
+        						$html .= 'With OptiGraph you can also calculate correlations between volatilities, analyze which vols are cheap or rich across underlying securities or different maturities, view skew patterns, trading volume, and more.<br/><br/>';
+        						$html .= 'Currently, OptiGraph is used by professional options traders at major investment banks, prop trading shops, and hedge funds. Traditional money managers also use OptiGraph to quickly assess implied volatility levels for the stocks and indices they trade.';
+        					$html .= '</p>';
+      					$html .= '</div>';
+    				$html .= '</div>';
+    				if( !is_page( 'data-products' ) ) : 
+    					$html .= '<div class="text-center text-md-left">';
+      						$html .= '<a href="/data-products/" class="btn btn-link text-uppercase pl-md-0 text-blue mt-xl-3 montserrat-medium">learn more <span class="fa fa-angle-double-right"></span> </a>';
+    					$html .= '</div>';
+  					endif;
+  				$html .= '</div>';
+			$html .= '</div>';
+      	$html .= '</div>';
+    $html .= '</div>';
+    // US ACCORDION 
+    $html .= '<div class="row d-flex align-items-center justify-content-between mb-lg-5 CO-body">';
+      	$html .= '<div class="col-md-10 offset-md-1 d-none d-md-block __i">';
+        	$html .= '<div id="accordion">';
+          		$html .= '<div class="card content-nav-graph">';
+            		$html .= '<div id="headingOne" class="orange1">';
+              			$html .= '<a class="nav-graph-link switch-png" data-toggle="collapse" data-target="#collapseOne" aria-controls="collapseOne" aria-expanded="true" role="button">';
+                			$html .= '<img src="'.home_url('wp-content/uploads/2019/04/Commprensive_icon.png').'" alt="icon">';
+                			$html .= '<p class="montserrat-medium">Comprehensive Coverage</p>';
+              			$html .= '</a>';
+            		$html .= '</div>';
+            		$html .= '<div id="collapseOne" class="collapse show orange1" aria-labelledby="headingOne" data-parent="#accordion">';
+              			$html .= '<div class="card-body lato-regular">';
+                			$html .= 'IvyDB contains a complete historical record of end-of-day data on all US exchange-traded equity and index options (including options on ETF’s and ADR’s) from January 1996 onward. The data includes both daily option pricing information (symbol, date, closing bid and ask quote, volume, and open interest) as well as high, low, and closing prices for the underlying equity or index. IvyDB also provides all interest rate, dividend, and corporate action information for each security, so you can correlate your own option pricing models with calculations.';
+              			$html .= '</div>';
+            		$html .= '</div>';
+          		$html .= '</div>';
+          		$html .= '<div class="card content-nav-graph">';
+            		$html .= '<div id="headingTwo" class="green2">';
+              			$html .= '<a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" role="button">';
+			                $html .= '<img src="'.home_url('wp-content/uploads/2019/04/Accumulate_icon.png').'" alt="icon">';
+                			$html .= '<p class="montserrat-medium">Accurate Calculations</p>';
+              			$html .= '</a>';
+            		$html .= '</div>';
+            		$html .= '<div id="collapseTwo" class="collapse green2" aria-labelledby="headingTwo" data-parent="#accordion">';
+              			$html .= '<div class="card-body lato-regular">';
+                			$html .= 'For each option price, we calculate an accurate implied volatility and store it along with the option sensitivities (delta, gamma, vega, and theta). Both European and American models are used as appropriate, with dividend/split adjustments correctly incorporated.';
+                			$html .= 'In addition, a standardized constant-maturity volatility surface is calculated for each security every day, including interpolated implied volatilities over a wide range of expirations and moneyness (by delta). You can use our volatility surface to create your own volatility trading strategies, whether simple or complex.';
+              			$html .= '</div>';
+            		$html .= '</div>';
+          		$html .= '</div>';
+          		$html .= '<div class="card content-nav-graph">';
+            		$html .= '<div id="headingThree" class="ping3">';
+              			$html .= '<a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" role="button">';
+                			$html .= '<img src="'.home_url('wp-content/uploads/2019/04/Continuos_icon.png').'" alt="icon">';
+                			$html .= '<p class="montserrat-medium">Continuous Time Series</p>';
+              			$html .= '</a>';
+            		$html .= '</div>';
+            		$html .= '<div id="collapseThree" class="collapse ping3" aria-labelledby="headingThree" data-parent="#accordion">';
+              			$html .= '<div class="card-body lato-regular">';
+                			$html .= 'Our database handles underlying symbol changes, dividend payments, and split/spinoff adjustments for you automatically. A permanent ID is associated with each instrument (equity, index, or option) to allow it to be easily tracked over time even when the option symbol, strike price or deliverables change. We also include a record of underlying security name and ticker changes, to allow you to easily search for options on securities either no longer trade or trade under a new ticker symbol.';
+		              	$html .= '</div>';
+            		$html .= '</div>';
+          		$html .= '</div>';
+          		$html .= '<div class="card content-nav-graph">';
+	            	$html .= '<div id="headingFour" class="blue4">';
+	              		$html .= '<a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" role="button">';
+	                		$html .= '<img src="'.home_url('wp-content/uploads/2019/04/Daily_icon.png').'" alt="icon">';
+	                		$html .= '<p class="montserrat-medium">Daily Updates</p>';
+	              		$html .= '</a>';
+	            	$html .= '</div>';
+            		$html .= '<div id="collapseFour" class="collapse blue4" aria-labelledby="headingFour" data-parent="#accordion">';
+              			$html .= '<div class="card-body lato-regular">';
+                			$html .= 'IvyDB US is updated daily to incorporate new end-of-day prices in all the equity and option exchanges we follow. A daily patch file is also provided which contains corrections to previous prices or calculations when needed. Your IvyDB database is always current and ready to use.';
+              			$html .= '</div>';
+            		$html .= '</div>';
+          		$html .= '</div>';
+          		$html .= '<div class="card content-nav-graph">';
+            		$html .= '<div id="headingFive" class="purple5">';
+              			$html .= '<a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive" role="button">';
+                			$html .= '<img src="'.home_url('wp-content/uploads/2019/04/Customer_icon.png').'" alt="icon">';
+                			$html .= '<p class="montserrat-medium">Customer Support</p>';
+              			$html .= '</a>';
+            		$html .= '</div>';
+            		$html .= '<div id="collapseFive" class="collapse purple5" aria-labelledby="headingFive" data-parent="#accordion">';
+              			$html .= '<div class="card-body lato-regular">';
+                			$html .= 'As an OptionMetrics customer, you will receive dedicated support and expert guidance from day one. We provide you with step-by-step manuals for installation, and in-depth Reference Manuals for your day-to-day use. Should you have any questions, our support team is available Monday through Friday, 8AM to 6PM (EST); for urgent issues, assistance is available 24/7. Contact us via, Email: <a href="mailto:info@optionmetrics.com">info@optionmetrics.com</a>, Phone: (212) 707-8370 or Fax: (212) 707-8495.';
+              			$html .= '</div>';
+            		$html .= '</div>';
+          		$html .= '</div>';
+        	$html .= '</div>';
+      	$html .= '</div>';
+
+      	// IMAGES 
+      	$html .= '<div class="col-md-6 tab-content d-none">';
+        	$html .= '<img src="'.home_url('wp-content/uploads/2019/04/Comprehensive_illustration.png').'" alt="Graph" class="img-fluid tab-pane active comprehensive mx-auto" id="comprehensive" role="tabpanel" aria-labelledby="comprehensive-tab">';
+	        $html .= '<img src="'.home_url('wp-content/uploads/2019/04/Accurate_illustration.png').' alt="Graph" class="img-fluid tab-pane accurate mx-auto" id="accurate" role="tabpanel" aria-labelledby="accurate-tab">';
+	        $html .= '<img src="'.home_url('wp-content/uploads/2019/04/Continouos_illustration.png').'" alt="Graph" class="img-fluid tab-pane continouos mx-auto" id="continouos" role="tabpanel" aria-labelledby="continouos-tab">';
+	        $html .= '<img src="'.home_url('wp-content/uploads/2019/04/Daily_illustration.png').'" alt="Graph" class="img-fluid tab-pane daily mx-auto" id="daily" role="tabpanel" aria-labelledby="daily-tab">';
+	        $html .= '<img src="'.home_url('wp-content/uploads/2019/04/Customer_illustration.png').'" alt="Graph" class="img-fluid tab-pane customer mx-auto" id="customer" role="tabpanel" aria-labelledby="customer-tab">';
+    	    $html .= '<div class="col-12 text-center">';
+        		$html .= '<a class="btn btn-yellow btn-main-slider mt-4" href="/contact">Let\'s Talk</a>';
+        	$html .= '</div>';
+      	$html .= '</div>';
+
+      	// view responsive
+      	$html .= '<div class="col-sm-12 d-md-none px-0 CO-body-mobile">
+        <div id="accordionUno">
+          <div class="card content-nav-graph">
+            <div id="heading1" class="orange1">
+              <a class="nav-graph-link switch-png" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Commprensive_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Comprehensive Coverage</p>
+              </a>
+            </div>
+            <div id="collapse1" class="collapse show orange1" aria-labelledby="heading1" data-parent="#accordionUno">
+              <div class="card-body lato-regular">
+                IvyDB contains a complete historical record of end-of-day data on all US exchange-traded equity and index options (including options on ETF’s and ADR’s) from January 1996 onward. The data includes both daily option pricing information (symbol, date, closing bid and ask quote, volume, and open interest) as well as high, low, and closing prices for the underlying equity or index. IvyDB also provides all interest rate, dividend, and corporate action information for each security, so you can correlate your own option pricing models with calculations.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading2" class="green2">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse2" aria-expanded="false" aria-controls="collapse2" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Accumulate_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Accurate Calculations</p>
+              </a>
+            </div>
+
+            <div id="collapse2" class="collapse green2" aria-labelledby="heading2" data-parent="#accordionUno">
+              <div class="card-body lato-regular">
+                For each option price, we calculate an accurate implied volatility and store it along with the option sensitivities (delta, gamma, vega, and theta). Both European and American models are used as appropriate, with dividend/split adjustments correctly incorporated.
+
+                In addition, a standardized constant-maturity volatility surface is calculated for each security every day, including interpolated implied volatilities over a wide range of expirations and moneyness (by delta). You can use our volatility surface to create your own volatility trading strategies, whether simple or complex.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading3" class="ping3">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse3" aria-expanded="false" aria-controls="collapse3" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Continuos_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Continuous Time Series</p>
+              </a>
+            </div>
+
+            <div id="collapse3" class="collapse ping3" aria-labelledby="heading3" data-parent="#accordionUno">
+              <div class="card-body lato-regular">
+                Our database handles underlying symbol changes, dividend payments, and split/spinoff adjustments for you automatically. A permanent ID is associated with each instrument (equity, index, or option) to allow it to be easily tracked over time even when the option symbol, strike price or deliverables change. We also include a record of underlying security name and ticker changes, to allow you to easily search for options on securities either no longer trade or trade under a new ticker symbol.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading4" class="blue4">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse4" aria-expanded="false" aria-controls="collapse4" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Daily_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Daily Updates</p>
+              </a>
+            </div>
+
+            <div id="collapse4" class="collapse blue4" aria-labelledby="heading4" data-parent="#accordionUno">
+              <div class="card-body lato-regular">
+                IvyDB US is updated daily to incorporate new end-of-day prices in all the equity and option exchanges we follow. A daily patch file is also provided which contains corrections to previous prices or calculations when needed. Your IvyDB database is always current and ready to use.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading5" class="purple5">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse5" aria-expanded="false" aria-controls="collapse5" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Customer_icon.png').'"" alt="icon">
+                <p class="montserrat-medium">Customer Support</p>
+              </a>
+            </div>
+
+            <div id="collapse5" class="collapse purple5" aria-labelledby="heading5" data-parent="#accordionUno">
+              <div class="card-body lato-regular">
+                As an OptionMetrics customer, you will receive dedicated support and expert guidance from day one. We provide you with step-by-step manuals for installation, and in-depth Reference Manuals for your day-to-day use. Should you have any questions, our support team is available Monday through Friday, 8AM to 6PM (EST); for urgent issues, assistance is available 24/7. Contact us via, Email: <a href="mailto:info@optionmetrics.com">info@optionmetrics.com</a>, Phone: (212) 707-8370 or Fax: (212) 707-8495.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+	   <div class="row d-flex align-items-center justify-content-between mb-5 CO-body" >
+      <!-- Accordion -->
+      <div class="col-md-10 offset-md-1 d-none d-md-block __i">
+        <div id="accordion3">
+          <div class="card content-nav-graph">
+            <div id="headingEleven" class="orange1">
+              <a class="nav-graph-link switch-png" data-toggle="collapse" data-target="#collapseEleven" aria-expanded="true" aria-controls="collapseEleven" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Commprensive_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Comprehensive Coverage</p>
+              </a>
+            </div>
+            <div id="collapseEleven" class="collapse show orange1" aria-labelledby="headingEleven" data-parent="#accordion3">
+              <div class="card-body lato-regular">
+                IvyDB Europe covers over 900 optionable securities (equities and indices), from all major European exchanges, including the UK, France, Germany, Switzerland, Netherlands, Belgium, Spain, and Italy. Historical data and daily updates are available for most securities since January 2002. The data includes daily option pricing information (settlement prices), our own dividend projections, and all historical distributions and corporate actions, such as splits, mergers, and name changes.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="headingTwelve" class="green2">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Accumulate_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Accurate Calculations</p>
+              </a>
+            </div>
+
+            <div id="collapseTwelve" class="collapse green2" aria-labelledby="headingTwelve" data-parent="#accordion3">
+              <div class="card-body lato-regular">
+                We match each option price with the security price for accurate implied volatility and greeks calculations along with the option sensitivities (delta, gamma, vega , and theta). In addition, a standardized constant-maturity volatility surface is calculated for each security every day, including interpolated implied volatilities over a wide range of expirations and moneyness (by delta). You can use our volatility surface to create your own volatility trading strategies, whether simple or complex.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="headingThirteen" class=" ping3">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseThirteen" aria-expanded="false" aria-controls="collapseThirteen" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Continuos_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Continuous Time Series</p>
+              </a>
+            </div>
+
+            <div id="collapseThirteen" class="collapse ping3" aria-labelledby="headingThirteen" data-parent="#accordion3">
+              <div class="card-body lato-regular">
+                Our database handles underlying symbol changes, dividend payments, and split/spinoff adjustments for you automatically. A permanent ID is associated with each instrument (equity, index, or option) to allow it to be easily tracked over time even when the option symbol, strike price or deliverables change. We also include a record of underlying security name and ticker changes, to allow you to easily search for options on securities either no longer trade or trade under a new ticker symbol.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="headingFourteen" class=" blue4">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseFourteen" aria-expanded="false" aria-controls="collapseFourteen" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Daily_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Daily Updates</p>
+              </a>
+            </div>
+
+            <div id="collapseFourteen" class="collapse blue4" aria-labelledby="headingFourteen" data-parent="#accordion3">
+              <div class="card-body lato-regular">
+                IvyDB Europe is updated daily to incorporate new end-of-day prices in all the equity and option exchanges we follow. A daily patch file is also provided which contains corrections to previous prices or calculations when needed. Your IvyDB database is always current and ready to use.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="headingFifteen" class=" purple5">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseFifteen" aria-expanded="false" aria-controls="collapseFifteen" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Customer_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Customer Support</p>
+              </a>
+            </div>
+
+            <div id="collapseFifteen" class="collapse purple5" aria-labelledby="headingFifteen" data-parent="#accordion3">
+              <div class="card-body lato-regular">
+                As an OptionMetrics customer, you will receive dedicated support and expert guidance from day one. We provide you with step-by-step manuals for installation, and in-depth Reference Manuals for your day-to-day use. Should you have any questions, our support team is available Monday through Friday, 8AM to 6PM (EST); for urgent issues, assistance is available 24/7. Contact us via, Email: <a href="mailto:info@optionmetrics.com">info@optionmetrics.com</a>, Phone: (212) 707-8370 or Fax: (212) 707-8495.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-xl-6 tab-content d-none">
+        <img src="'.home_url('wp-content/uploads/2019/04/Commprensive_icon.png').'" alt="Graph" class="img-fluid tab-pane active comprehensive" id="comprehensive" role="tabpanel" aria-labelledby="comprehensive-tab">
+        <img src="'.home_url('wp-content/uploads/2019/04/Accurate_illustration.png').'" alt="Graph" class="img-fluid tab-pane accurate" id="accurate" role="tabpanel" aria-labelledby="accurate-tab">
+        <img src="'.home_url('wp-content/uploads/2019/04/Continouos_illustration.png').'" alt="Graph" class="img-fluid tab-pane continouos" id="continouos" role="tabpanel" aria-labelledby="continouos-tab">
+        <img src="'.home_url('wp-content/uploads/2019/04/Daily_illustration.png').'" alt="Graph" class="img-fluid tab-pane daily" id="daily" role="tabpanel" aria-labelledby="daily-tab">
+        <img src="'.home_url('wp-content/uploads/2019/04/Customer_illustration.png').'" alt="Graph" class="img-fluid tab-pane customer" id="customer" role="tabpanel" aria-labelledby="customer-tab">
+        <div class="col-12 text-center">
+          <a class="btn btn-yellow btn-main-slider mt-4" href="/contact">Let\'s Talk</a>
+        </div>
+      </div>
+
+      <div class="col-sm-12 d-md-none px-0 CO-body-mobile">
+        <div id="accordionTres">
+          <div class="card content-nav-graph">
+            <div id="heading11" class="orange1">
+              <a class="nav-graph-link switch-png" data-toggle="collapse" data-target="#collapse11" aria-expanded="true" aria-controls="collapse11" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Commprensive_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Comprehensive Coverage</p>
+              </a>
+            </div>
+            <div id="collapse11" class="collapse show orange1" aria-labelledby="heading11" data-parent="#accordionTres">
+              <div class="card-body lato-regular">
+                IvyDB Europe covers over 900 optionable securities (equities and indices), from all major European exchanges, including the UK, France, Germany, Switzerland, Netherlands, Belgium, Spain, and Italy. Historical data and daily updates are available for most securities since January 2002. The data includes daily option pricing information (settlement prices), our own dividend projections, and all historical distributions and corporate actions, such as splits, mergers, and name changes.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading12" class="green2">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse12" aria-expanded="false" aria-controls="collapse12" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Accumulate_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Accurate Calculations</p>
+              </a>
+            </div>
+
+            <div id="collapse12" class="collapse green2" aria-labelledby="heading12" data-parent="#accordionTres">
+              <div class="card-body lato-regular">
+                We match each option price with the security price for accurate implied volatility and greeks calculations along with the option sensitivities (delta, gamma, vega , and theta). In addition, a standardized constant-maturity volatility surface is calculated for each security every day, including interpolated implied volatilities over a wide range of expirations and moneyness (by delta). You can use our volatility surface to create your own volatility trading strategies, whether simple or complex.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading13" class=" ping3">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse13" aria-expanded="false" aria-controls="collapse13" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Continuos_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Continuous Time Series</p>
+              </a>
+            </div>
+
+            <div id="collapse13" class="collapse ping3" aria-labelledby="heading13" data-parent="#accordionTres">
+              <div class="card-body lato-regular">
+                Our database handles underlying symbol changes, dividend payments, and split/spinoff adjustments for you automatically. A permanent ID is associated with each instrument (equity, index, or option) to allow it to be easily tracked over time even when the option symbol, strike price or deliverables change. We also include a record of underlying security name and ticker changes, to allow you to easily search for options on securities either no longer trade or trade under a new ticker symbol.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading14" class=" blue4">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse14" aria-expanded="false" aria-controls="collapse14" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Daily_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Daily Updates</p>
+              </a>
+            </div>
+
+            <div id="collapse14" class="collapse blue4" aria-labelledby="heading14" data-parent="#accordionTres">
+              <div class="card-body lato-regular">
+                IvyDB Europe is updated daily to incorporate new end-of-day prices in all the equity and option exchanges we follow. A daily patch file is also provided which contains corrections to previous prices or calculations when needed. Your IvyDB database is always current and ready to use.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading15" class=" purple5">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse15" aria-expanded="false" aria-controls="collapse15" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Customer_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Customer Support</p>
+              </a>
+            </div>
+
+            <div id="collapse15" class="collapse purple5" aria-labelledby="heading15" data-parent="#accordionTres">
+              <div class="card-body lato-regular">
+                As an OptionMetrics customer, you will receive dedicated support and expert guidance from day one. We provide you with step-by-step manuals for installation, and in-depth Reference Manuals for your day-to-day use. Should you have any questions, our support team is available Monday through Friday, 8AM to 6PM (EST); for urgent issues, assistance is available 24/7. Contact us via, Email: <a href="mailto:info@optionmetrics.com">info@optionmetrics.com</a>, Phone: (212) 707-8370 or Fax: (212) 707-8495.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row d-flex align-items-center justify-content-between mb-5 CO-body">
+
+      <div class="col-md-10 offset-md-1 d-none d-md-block __i">
+        <div id="accordion4">
+          <div class="card content-nav-graph">
+            <div id="headingSixteen" class="orange1">
+              <a class="nav-graph-link switch-png" data-toggle="collapse" data-target="#collapseSixteen" aria-expanded="true" aria-controls="collapseSixteen" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Commprensive_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Comprehensive Coverage</p>
+              </a>
+            </div>
+            <div id="collapseSixteen" class="collapse show orange1" aria-labelledby="headingSixteen" data-parent="#accordion4">
+              <div class="card-body lato-regular">
+                IvyDB Asia covers over 500 optionable securities (equities and indices), from all major Asian-Pacific exchanges, including Hong Kong, Japan, Taiwan, Korea, and Australia. Historical data and daily updates are available for most securities since January 2006. The data includes daily option pricing information (settlement prices), our own dividend projections, and all historical distributions and corporate actions, such as splits, mergers, and name changes.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="headingSeventeen" class="green2">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseSeventeen" aria-expanded="false" aria-controls="collapseSeventeen" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Accumulate_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Accurate Calculations</p>
+              </a>
+            </div>
+
+            <div id="collapseSeventeen" class="collapse green2" aria-labelledby="headingSeventeen" data-parent="#accordion4">
+              <div class="card-body lato-regular">
+                We match each option price with the security price for accurate implied volatility and greeks calculations along with the option sensitivities (delta, gamma, vega , and theta). In addition, a standardized constant-maturity volatility surface is calculated for each security every day, including interpolated implied volatilities over a wide range of expirations and moneyness (by delta). You can use our volatility surface to create your own volatility trading strategies, whether simple or complex.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="headingEighteen" class="ping3">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseEighteen" aria-expanded="false" aria-controls="collapseEighteen" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Continuos_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Continuous Time Series</p>
+              </a>
+            </div>
+
+            <div id="collapseEighteen" class="collapse ping3" aria-labelledby="headingEighteen" data-parent="#accordion4">
+              <div class="card-body lato-regular">
+                Our database handles underlying symbol changes, dividend payments, and split/spinoff adjustments for you automatically. A permanent ID is associated with each instrument (equity, index, or option) to allow it to be easily tracked over time even when the option symbol, strike price or deliverables change. We also include a record of underlying security name and ticker changes, to allow you to easily search for options on securities either no longer trade or trade under a new ticker symbol.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="headingNineteen" class="blue4">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseNineteen" aria-expanded="false" aria-controls="collapseNineteen" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Daily_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Daily Updates</p>
+              </a>
+            </div>
+
+            <div id="collapseNineteen" class="collapse blue4" aria-labelledby="headingNineteen" data-parent="#accordion4">
+              <div class="card-body lato-regular">
+                IvyDB Asia is updated daily to incorporate new end-of-day prices in all the equity and option exchanges we follow. A daily patch file is also provided which contains corrections to previous prices or calculations when needed. Your IvyDB database is always current and ready to use.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="headingTwenty" class="purple5">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseTwenty" aria-expanded="false" aria-controls="collapseTwenty" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Customer_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Customer Support</p>
+              </a>
+            </div>
+
+            <div id="collapseTwenty" class="collapse purple5" aria-labelledby="headingTwenty" data-parent="#accordion4">
+              <div class="card-body lato-regular">
+                As an OptionMetrics customer, you will receive dedicated support and expert guidance from day one. We provide you with step-by-step manuals for installation, and in-depth Reference Manuals for your day-to-day use. Should you have any questions, our support team is available Monday through Friday, 8AM to 6PM (EST); for urgent issues, assistance is available 24/7. Contact us via, Email: <a href="mailto:info@optionmetrics.com">info@optionmetrics.com</a>, Phone: (212) 707-8370 or Fax: (212) 707-8495.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-md-6 col-xl-6 tab-content d-none">
+        <img src="'.home_url('wp-content/uploads/2019/04/Comprehensive_illustration.png').'" alt="Graph" class="img-fluid tab-pane active comprehensive" id="comprehensive" role="tabpanel" aria-labelledby="comprehensive-tab">
+        <img src="'.home_url('wp-content/uploads/2019/04/Accurate_illustration.png').'" alt="Graph" class="img-fluid tab-pane accurate" id="accurate" role="tabpanel" aria-labelledby="accurate-tab">
+        <img src="'.home_url('wp-content/uploads/2019/04/Continouos_illustration.png').'" alt="Graph" class="img-fluid tab-pane continouos" id="continouos" role="tabpanel" aria-labelledby="continouos-tab">
+        <img src="'.home_url('wp-content/uploads/2019/04/Daily_illustration.png').'" alt="Graph" class="img-fluid tab-pane daily" id="daily" role="tabpanel" aria-labelledby="daily-tab">
+        <img src="'.home_url('wp-content/uploads/2019/04/Customer_illustration.png').'" alt="Graph" class="img-fluid tab-pane customer" id="customer" role="tabpanel" aria-labelledby="customer-tab">
+        <div class="col-12 text-center">
+          <a class="btn btn-yellow btn-main-slider mt-4" href="/contact">Let\'s Talk</a>
+        </div>
+      </div>
+
+      <!-- view responsive -->
+      <div class="col-sm-12 d-md-none px-0 CO-body-mobile">
+        <div id="accordionCuatro">
+          <div class="card content-nav-graph">
+            <div id="heading16" class="orange1">
+              <a class="nav-graph-link switch-png" data-toggle="collapse" data-target="#collapse16" aria-expanded="true" aria-controls="collapse16" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Commprensive_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Comprehensive Coverage</p>
+              </a>
+            </div>
+            <div id="collapse16" class="collapse show orange1" aria-labelledby="heading16" data-parent="#accordionCuatro">
+              <div class="card-body lato-regular">
+                IvyDB Asia covers over 500 optionable securities (equities and indices), from all major Asian-Pacific exchanges, including Hong Kong, Japan, Taiwan, Korea, and Australia. Historical data and daily updates are available for most securities since January 2006. The data includes daily option pricing information (settlement prices), our own dividend projections, and all historical distributions and corporate actions, such as splits, mergers, and name changes.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading17" class="green2">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse17" aria-expanded="false" aria-controls="collapse17" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Accumulate_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Accurate Calculations</p>
+              </a>
+            </div>
+
+            <div id="collapse17" class="collapse green2" aria-labelledby="heading17" data-parent="#accordionCuatro">
+              <div class="card-body lato-regular">
+                We match each option price with the security price for accurate implied volatility and greeks calculations along with the option sensitivities (delta, gamma, vega , and theta). In addition, a standardized constant-maturity volatility surface is calculated for each security every day, including interpolated implied volatilities over a wide range of expirations and moneyness (by delta). You can use our volatility surface to create your own volatility trading strategies, whether simple or complex.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading18" class="ping3">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse18" aria-expanded="false" aria-controls="collapse18" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Continuos_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Continuous Time Series</p>
+              </a>
+            </div>
+
+            <div id="collapse18" class="collapse ping3" aria-labelledby="heading18" data-parent="#accordionCuatro">
+              <div class="card-body lato-regular">
+                Our database handles underlying symbol changes, dividend payments, and split/spinoff adjustments for you automatically. A permanent ID is associated with each instrument (equity, index, or option) to allow it to be easily tracked over time even when the option symbol, strike price or deliverables change. We also include a record of underlying security name and ticker changes, to allow you to easily search for options on securities either no longer trade or trade under a new ticker symbol.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading19" class="blue4">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse19" aria-expanded="false" aria-controls="collapse19" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Daily_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Daily Updates</p>
+              </a>
+            </div>
+
+            <div id="collapse19" class="collapse blue4" aria-labelledby="heading19" data-parent="#accordionCuatro">
+              <div class="card-body lato-regular">
+                IvyDB Asia is updated daily to incorporate new end-of-day prices in all the equity and option exchanges we follow. A daily patch file is also provided which contains corrections to previous prices or calculations when needed. Your IvyDB database is always current and ready to use.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading20" class="purple5">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse20" aria-expanded="false" aria-controls="collapse20" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Customer_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Customer Support</p>
+              </a>
+            </div>
+
+            <div id="collapse20" class="collapse purple5" aria-labelledby="heading20" data-parent="#accordionCuatro">
+              <div class="card-body lato-regular">
+                As an OptionMetrics customer, you will receive dedicated support and expert guidance from day one. We provide you with step-by-step manuals for installation, and in-depth Reference Manuals for your day-to-day use. Should you have any questions, our support team is available Monday through Friday, 8AM to 6PM (EST); for urgent issues, assistance is available 24/7. Contact us via, Email: <a href="mailto:info@optionmetrics.com">info@optionmetrics.com</a>, Phone: (212) 707-8370 or Fax: (212) 707-8495.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row d-flex align-items-center justify-content-between mb-5 CO-body" >
+      <!-- Accordion -->
+      <div class="col-md-10 offset-md-1 d-none d-md-block __i">
+        <div id="accordion2">
+          <div class="card content-nav-graph">
+            <div id="headingSix" class="orange1">
+              <a class="nav-graph-link switch-png" data-toggle="collapse" data-target="#collapseSix" aria-expanded="true" aria-controls="collapseSix" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Commprensive_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Comprehensive Coverage</p>
+              </a>
+            </div>
+            <div id="collapseSix" class="collapse show orange1" aria-labelledby="headingSix" data-parent="#accordion2">
+              <div class="card-body lato-regular">
+                IvyDB Canada covers over 200 optionable securities (equities, indices, and ETFs) from Canadian exchanges. Historical data and daily updates are available for most securities since March 2007. The data includes daily option pricing information (settlement prices), our own dividend projections, and all historical distributions and corporate actions, such as splits, mergers, and name changes.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="headingSeven" class=" green2">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Accumulate_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Accurate Calculations</p>
+              </a>
+            </div>
+
+            <div id="collapseSeven" class="collapse green2" aria-labelledby="headingSeven" data-parent="#accordion2">
+              <div class="card-body lato-regular">
+                For each option price, we calculate an accurate implied volatility and store it along with the option sensitivities (delta, gamma, vega , and theta). Both European and American models are used as appropriate, with dividend/split adjustments correctly incorporated. In addition, a standardized constant-maturity volatility surface is calculated for each security every day, including interpolated implied volatilities over a wide range of expirations and moneyness (by delta). You can use our volatility surface to create your own volatility trading strategies, whether simple or complex.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="headingEight" class="ping3">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Continuos_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Continuous Time Series</p>
+              </a>
+            </div>
+
+            <div id="collapseEight" class="collapse ping3" aria-labelledby="headingEight" data-parent="#accordion2">
+              <div class="card-body lato-regular">
+                Our database handles underlying symbol changes, dividend payments, and split/spinoff adjustments for you automatically. A permanent ID is associated with each instrument (equity, index, or option) to allow it to be easily tracked over time even when the option symbol, strike price or deliverables change. We also include a record of underlying security name and ticker changes, to allow you to easily search for options on securities either no longer trade or trade under a new ticker symbol.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="headingNine" class="blue4">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Daily_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Daily Updates</p>
+              </a>
+            </div>
+
+            <div id="collapseNine" class="collapse blue4" aria-labelledby="headingNine" data-parent="#accordion2">
+              <div class="card-body lato-regular">
+                IvyDB Canada is updated daily to incorporate new end-of-day prices in all the equity and option exchanges we follow. A daily patch file is also provided which contains corrections to previous prices or calculations when needed. Your IvyDB database is always current and ready to use.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="headingTen" class="purple5">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen"  role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Customer_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Customer Support</p>
+              </a>
+            </div>
+
+            <div id="collapseTen" class="collapse purple5" aria-labelledby="headingTen" data-parent="#accordion2">
+              <div class="card-body lato-regular">
+                As an OptionMetrics customer, you will receive dedicated support and expert guidance from day one. We provide you with step-by-step manuals for installation, and in-depth Reference Manuals for your day-to-day use. Should you have any questions, our support team is available Monday through Friday, 8AM to 6PM (EST); for urgent issues, assistance is available 24/7. Contact us via, Email: <a href="mailto:info@optionmetrics.com">info@optionmetrics.com</a>, Phone: (212) 707-8370 or Fax: (212) 707-8495.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-xl-6 tab-content d-none">
+        <img src="'.home_url('wp-content/uploads/2019/04/Comprehensive_illustration.png').'" alt="Graph" class="img-fluid tab-pane active comprehensive" id="comprehensive" role="tabpanel" aria-labelledby="comprehensive-tab">
+        <img src="'.home_url('wp-content/uploads/2019/04/Accurate_illustration.png').'" alt="Graph" class="img-fluid tab-pane accurate" id="accurate" role="tabpanel" aria-labelledby="accurate-tab">
+        <img src="'.home_url('wp-content/uploads/2019/04/Continouos_illustration.png').'" alt="Graph" class="img-fluid tab-pane continouos" id="continouos" role="tabpanel" aria-labelledby="continouos-tab">
+        <img src="'.home_url('wp-content/uploads/2019/04/Daily_illustration.png').'" alt="Graph" class="img-fluid tab-pane daily" id="daily" role="tabpanel" aria-labelledby="daily-tab">
+        <img src="'.home_url('wp-content/uploads/2019/04/Customer_illustration.png').'" alt="Graph" class="img-fluid tab-pane customer" id="customer" role="tabpanel" aria-labelledby="customer-tab">
+        <div class="col-12 text-center">
+          <a class="btn btn-yellow btn-main-slider mt-4" href="/contact">Let\'s Talk</a>
+        </div>
+      </div>
+
+      <div class="col-sm-12 d-md-none px-0 CO-body-mobile">
+        <div id="accordionDos">
+          <div class="card content-nav-graph">
+            <div id="heading6" class="orange1">
+              <a class="nav-graph-link switch-png" data-toggle="collapse" data-target="#collapse6" aria-expanded="true" aria-controls="collapse6" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Commprensive_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Comprehensive Coverage</p>
+              </a>
+            </div>
+            <div id="collapse6" class="collapse show orange1" aria-labelledby="heading6" data-parent="#accordionDos">
+              <div class="card-body lato-regular">
+                IvyDB Canada covers over 200 optionable securities (equities, indices, and ETFs) from Canadian exchanges. Historical data and daily updates are available for most securities since March 2007. The data includes daily option pricing information (settlement prices), our own dividend projections, and all historical distributions and corporate actions, such as splits, mergers, and name changes.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading7" class=" green2">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse7" aria-expanded="false" aria-controls="collapse7" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Accumulate_icon.png').' alt="icon">
+                <p class="montserrat-medium">Accurate Calculations</p>
+              </a>
+            </div>
+
+            <div id="collapse7" class="collapse green2" aria-labelledby="heading7" data-parent="#accordionDos">
+              <div class="card-body lato-regular">
+                For each option price, we calculate an accurate implied volatility and store it along with the option sensitivities (delta, gamma, vega , and theta). Both European and American models are used as appropriate, with dividend/split adjustments correctly incorporated. In addition, a standardized constant-maturity volatility surface is calculated for each security every day, including interpolated implied volatilities over a wide range of expirations and moneyness (by delta). You can use our volatility surface to create your own volatility trading strategies, whether simple or complex.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading8" class=" ping3">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse8" aria-expanded="false" aria-controls="collapse8" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Continuos_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Continuous Time Series</p>
+              </a>
+            </div>
+
+            <div id="collapse8" class="collapse ping3" aria-labelledby="heading8" data-parent="#accordionDos">
+              <div class="card-body lato-regular">
+                Our database handles underlying symbol changes, dividend payments, and split/spinoff adjustments for you automatically. A permanent ID is associated with each instrument (equity, index, or option) to allow it to be easily tracked over time even when the option symbol, strike price or deliverables change. We also include a record of underlying security name and ticker changes, to allow you to easily search for options on securities either no longer trade or trade under a new ticker symbol.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading9" class="blue4">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse9" aria-expanded="false" aria-controls="collapse9" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Daily_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Daily Updates</p>
+              </a>
+            </div>
+
+            <div id="collapse9" class="collapse blue4" aria-labelledby="heading9" data-parent="#accordionDos">
+              <div class="card-body lato-regular">
+                IvyDB Canada is updated daily to incorporate new end-of-day prices in all the equity and option exchanges we follow. A daily patch file is also provided which contains corrections to previous prices or calculations when needed. Your IvyDB database is always current and ready to use.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading10" class="purple5">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse10" aria-expanded="false" aria-controls="collapse10" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Customer_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Customer Support</p>
+              </a>
+            </div>
+
+            <div id="collapse10" class="collapse purple5" aria-labelledby="heading10" data-parent="#accordionDos">
+              <div class="card-body lato-regular">
+                As an OptionMetrics customer, you will receive dedicated support and expert guidance from day one. We provide you with step-by-step manuals for installation, and in-depth Reference Manuals for your day-to-day use. Should you have any questions, our support team is available Monday through Friday, 8AM to 6PM (EST); for urgent issues, assistance is available 24/7. Contact us via, Email: <a href="mailto:info@optionmetrics.com">info@optionmetrics.com</a>, Phone: (212) 707-8370 or Fax: (212) 707-8495.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row d-flex align-items-center justify-content-between mb-5 CO-body" >
+
+      <div class="col-md-10 offset-md-1 d-none d-md-block __i">
+        <div id="accordion5">
+          <div class="card content-nav-graph">
+            <div id="headingTwentyone" class="orange1">
+              <a class="nav-graph-link switch-png" data-toggle="collapse" data-target="#collapseTwentyone" aria-expanded="true" aria-controls="collapseTwentyone" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Commprensive_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Comprehensive Coverage</p>
+              </a>
+            </div>
+            <div id="collapseTwentyone" class="collapse show orange1" aria-labelledby="headingTwentyone" data-parent="#accordion5">
+              <div class="card-body lato-regular">
+                IvyDB Global Indices covers 29 major indices from exchanges in the US, Europe, Asia, and Canada. Historical data and daily updates are available for most securities since 1996 for the US, 2002 for Europe, and 2006 for Asia and Canada. The data includes daily option pricing information (settlement prices), our own dividend projections, and all historical distributions and corporate actions, such as splits, mergers, and name changes.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="headingTwentytwo" class="green2">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseTwentytwo" aria-expanded="false" aria-controls="collapseTwentytwo" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Accumulate_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Accurate Calculations</p>
+              </a>
+            </div>
+
+            <div id="collapseTwentytwo" class="collapse green2" aria-labelledby="headingTwentytwo" data-parent="#accordion5">
+              <div class="card-body lato-regular">
+                We match each option price with the security price for accurate implied volatility and greeks calculations, along with the option sensitivities (delta, gamma, vega, and theta). Both European and American models are used as appropriate, with dividend/split adjustments correctly incorporated. In addition, a standardized constant-maturity volatility surface is calculated for each security every day, including interpolated implied volatilities over a wide range of expirations and moneyness (by delta). You can use our volatility surface to create your own volatility trading strategies, whether simple or complex.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="headingTwentythree" class="ping3">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseTwentythree" aria-expanded="false" aria-controls="collapseTwentythree" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Continuos_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Continuous Time Series</p>
+              </a>
+            </div>
+
+            <div id="collapseTwentythree" class="collapse ping3" aria-labelledby="headingTwentythree" data-parent="#accordion5">
+              <div class="card-body lato-regular">
+                Our database handles underlying symbol changes, dividend payments, and split/spinoff adjustments for you automatically. A permanent ID is associated with each instrument (equity, index, or option) to allow it to be easily tracked over time even when the option symbol, strike price or deliverables change. We also include a record of underlying security name and ticker changes, to allow you to easily search for options on securities either no longer trade or trade under a new ticker symbol.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="headingTwentyfour" class="blue4">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseTwentyfour" aria-expanded="false" aria-controls="collapseTwentyfour" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Daily_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Daily Updates</p>
+              </a>
+            </div>
+
+            <div id="collapseTwentyfour" class="collapse blue4" aria-labelledby="headingTwentyfour" data-parent="#accordion5">
+              <div class="card-body lato-regular">
+                IvyDB Global Indices is updated daily to incorporate new end-of-day prices in all the equity and option exchanges we follow. A daily patch file is also provided which contains corrections to previous prices or calculations when needed. Your IvyDB database is always current and ready to use.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="headingTwentyfive" class="purple5">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapseTwentyfive" aria-expanded="false" aria-controls="collapseTwentyfive" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Customer_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Customer Support</p>
+              </a>
+            </div>
+
+            <div id="collapseTwentyfive" class="collapse purple5" aria-labelledby="headingTwentyfive" data-parent="#accordion5">
+              <div class="card-body lato-regular">
+                As an OptionMetrics customer, you will receive dedicated support and expert guidance from day one. We provide you with step-by-step manuals for installation, and in-depth Reference Manuals for your day-to-day use. Should you have any questions, our support team is available Monday through Friday, 8AM to 6PM (EST); for urgent issues, assistance is available 24/7. Contact us via, Email: <a href="mailto:info@optionmetrics.com">info@optionmetrics.com</a>, Phone: (212) 707-8370 or Fax: (212) 707-8495.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+     
+      <div class="col-md-6 col-xl-6 tab-content d-none">
+        <img src="'.home_url('wp-content/uploads/2019/04/Comprehensive_illustration.png').'" alt="Graph" class="img-fluid tab-pane active comprehensive" id="comprehensive" role="tabpanel" aria-labelledby="comprehensive-tab">
+        <img src="'.home_url('wp-content/uploads/2019/04/Accurate_illustration.png').'" alt="Graph" class="img-fluid tab-pane accurate" id="accurate" role="tabpanel" aria-labelledby="accurate-tab">
+        <img src="'.home_url('wp-content/uploads/2019/04/Continouos_illustration.png').'" alt="Graph" class="img-fluid tab-pane continouos" id="continouos" role="tabpanel" aria-labelledby="continouos-tab">
+        <img src="'.home_url('wp-content/uploads/2019/04/Daily_illustration.png').'" alt="Graph" class="img-fluid tab-pane daily" id="daily" role="tabpanel" aria-labelledby="daily-tab">
+        <img src="'.home_url('wp-content/uploads/2019/04/Customer_illustration.png').'" alt="Graph" class="img-fluid tab-pane customer" id="customer" role="tabpanel" aria-labelledby="customer-tab">
+        <div class="col-12 text-center">
+          <a class="btn btn-yellow btn-main-slider mt-4" href="/contact">Let\'s Talk</a>
+        </div>
+      </div>
+
+      <!-- view responsive -->
+      <div class="col-sm-12 d-md-none px-0 CO-body-mobile">
+        <div id="accordeonCinco">
+          <div class="card content-nav-graph">
+            <div id="heading21" class="orange1">
+              <a class="nav-graph-link switch-png" data-toggle="collapse" data-target="#collapse21" aria-expanded="true" aria-controls="collapse21" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Commprensive_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Comprehensive Coverage</p>
+              </a>
+            </div>
+            <div id="collapseTwentyone" class="collapse show orange1" aria-labelledby="headingTwentyone" data-parent="#accordeonCinco">
+              <div class="card-body lato-regular">
+                IvyDB Global Indices covers 29 major indices from exchanges in the US, Europe, Asia, and Canada. Historical data and daily updates are available for most securities since 1996 for the US, 2002 for Europe, and 2006 for Asia and Canada. The data includes daily option pricing information (settlement prices), our own dividend projections, and all historical distributions and corporate actions, such as splits, mergers, and name changes.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading22" class="green2">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse22" aria-expanded="false" aria-controls="collapse22" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Accumulate_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Accurate Calculations</p>
+              </a>
+            </div>
+
+            <div id="collapse22" class="collapse green2" aria-labelledby="heading22" data-parent="#accordeonCinco">
+              <div class="card-body lato-regular">
+                We match each option price with the security price for accurate implied volatility and greeks calculations, along with the option sensitivities (delta, gamma, vega, and theta). Both European and American models are used as appropriate, with dividend/split adjustments correctly incorporated. In addition, a standardized constant-maturity volatility surface is calculated for each security every day, including interpolated implied volatilities over a wide range of expirations and moneyness (by delta). You can use our volatility surface to create your own volatility trading strategies, whether simple or complex.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading23" class="ping3">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse23" aria-expanded="false" aria-controls="collapse23" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Continuos_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Continuous Time Series</p>
+              </a>
+            </div>
+
+            <div id="collapse23" class="collapse ping3" aria-labelledby="heading23" data-parent="#accordeonCinco">
+              <div class="card-body lato-regular">
+                Our database handles underlying symbol changes, dividend payments, and split/spinoff adjustments for you automatically. A permanent ID is associated with each instrument (equity, index, or option) to allow it to be easily tracked over time even when the option symbol, strike price or deliverables change. We also include a record of underlying security name and ticker changes, to allow you to easily search for options on securities either no longer trade or trade under a new ticker symbol.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading24" class="blue4">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse24" aria-expanded="false" aria-controls="collapse24" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Daily_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Daily Updates</p>
+              </a>
+            </div>
+
+            <div id="collapse24" class="collapse blue4" aria-labelledby="heading24" data-parent="#accordeonCinco">
+              <div class="card-body lato-regular">
+                IvyDB Global Indices is updated daily to incorporate new end-of-day prices in all the equity and option exchanges we follow. A daily patch file is also provided which contains corrections to previous prices or calculations when needed. Your IvyDB database is always current and ready to use.
+              </div>
+            </div>
+          </div>
+
+          <div class="card content-nav-graph">
+            <div id="heading25" class="purple5">
+              <a class="nav-graph-link collapsed switch-png" data-toggle="collapse" data-target="#collapse25" aria-expanded="false" aria-controls="collapse25" role="button">
+                <img src="'.home_url('wp-content/uploads/2019/04/Customer_icon.png').'" alt="icon">
+                <p class="montserrat-medium">Customer Support</p>
+              </a>
+            </div>
+
+            <div id="collapse25" class="collapse purple5" aria-labelledby="heading25" data-parent="#accordeonCinco">
+              <div class="card-body lato-regular">
+                As an OptionMetrics customer, you will receive dedicated support and expert guidance from day one. We provide you with step-by-step manuals for installation, and in-depth Reference Manuals for your day-to-day use. Should you have any questions, our support team is available Monday through Friday, 8AM to 6PM (EST); for urgent issues, assistance is available 24/7. Contact us via, Email: <a href="mailto:info@optionmetrics.com">info@optionmetrics.com</a>, Phone: (212) 707-8370 or Fax: (212) 707-8495.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>';
+
+	return $html;
+
+}
+add_shortcode( 'my_vc_php_output_data_products', 'vc_shortcode_data_products');

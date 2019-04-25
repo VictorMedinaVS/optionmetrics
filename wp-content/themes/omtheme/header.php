@@ -15,6 +15,7 @@
 		<meta charset="<?php bloginfo( 'charset' ); ?>">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<?php wp_head() ?>
+		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css">
 	</head>
 <body id="page-top" data-spy="scroll" >
 <?php if ( visualcomposerstarter_is_the_header_displayed() ) : ?>
