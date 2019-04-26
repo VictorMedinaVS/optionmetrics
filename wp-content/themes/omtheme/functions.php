@@ -2110,8 +2110,6 @@ add_shortcode( 'my_vc_php_output_news', 'vc_shortcode_news');
 
 function vc_shortcode_careers ( $atts ){
 
-		$html = '<div class="position-relative">';
-  			$html .= '<div class="position-absolute page-wrapper-up">';
     			$html .= '<div class="container pt-3 p-lg-5 pb-4 bg-white">';
       				$html .= '<div id="form-careers" class="py-5">';
           				$html .= '<div class="text-center mx-auto">';
@@ -2181,7 +2179,7 @@ function vc_shortcode_careers ( $atts ){
                     								$jobs->the_post();
                     									if ($i == 0 ) { $cls = 'active '; } else { $cls = ''; }
                 											$html .= '<div class="carousel-item '.$cls.'">';
-                  										 		$html .= '<div class="col-md-6 offset-md-3">'.get_the_post_thumbnail( get_the_ID(), "", array( "class" => "attachment-full img-fluid w-100" ) ).'>';
+                  										 		$html .= '<div class="col-md-6 offset-md-3">'.get_the_post_thumbnail( get_the_ID(), "", array( "class" => "attachment-full img-fluid w-100" ) );
 																	$html .= '<p class="montserrat-medium text-blue mt-2 mb-0">'.get_the_title().'</p>';
                   	 												$html .= '<a href="'.get_the_permalink().'" class="btn btn-link montserrat-medium text-blue pl-md-0 o-50">SEE POSITION<span class="fa fa-angle-double-right"></span></a>';
                   												$html .= '</div>';
@@ -2202,9 +2200,6 @@ function vc_shortcode_careers ( $atts ){
         				$html .= '</div>';
       				$html .= '</div>';
     			$html .= '</div>';
-			$html .= '</div>';
-		$html .= '</div>';
-
   return $html;
 
 }
@@ -2329,7 +2324,7 @@ function vc_shortcode_research ( $atts ){
               				$html .= '<option data-toggle="tab" value="view-all">View All</option>';
               				$html .= '<option data-toggle="tab" value="optionmetrics">Optionmetrics</option>';
               				$html .= '<option data-toggle="tab" value="academics">Academics</option>';
-              				$html .= '<option data-toggle="tab" value="institutional">Institutional</option>';
+              				$html .= '<option data-toggle="tab" value="institutional-research">Institutional</option>';
             			$html .= '</select>';
 	          		$html .= '</div>';
         		$html .= '</div>';
@@ -2365,7 +2360,7 @@ function vc_shortcode_research ( $atts ){
               				$html .= '<a class="nav-item research-nav-item first active" id="nav-tab-view-all" data-toggle="tab" role="tab" aria-controls="nav-view-all" aria-selected="true" name="view-all-research">View All</a>';
               				$html .= '<a class="nav-item research-nav-item" id="nav-tab-optionmetrics" data-toggle="tab" role="tab" aria-controls="nav-optionmetrics" aria-selected="false" name="optionmetrics">Optionmetrics</a>';
               				$html .= '<a class="nav-item research-nav-item" id="nav-tab-academics" data-toggle="tab" role="tab" aria-controls="nav-academics" aria-selected="false" name="academics-research">Academics</a>';
-              				$html .= '<a class="nav-item research-nav-item" id="nav-tab-institutional" data-toggle="tab" role="tab" aria-controls="nav-institutional" aria-selected="false" name="institutional">Institutional</a>';
+              				$html .= '<a class="nav-item research-nav-item" id="nav-tab-institutional" data-toggle="tab" role="tab" aria-controls="nav-institutional" aria-selected="false" name="institutional-research">Institutional</a>';
           		  		$html .= '</div>';
           			$html .= '</nav>';
           			//RESEARCH DESKTOP
