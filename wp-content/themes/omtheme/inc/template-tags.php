@@ -90,7 +90,7 @@ if ( ! function_exists( 'visualcomposerstarter_header_featured_content' ) ) :
 			<div class="<?php echo esc_attr( visualcomposerstarter_get_header_image_container_class() ); ?>">
 				<div class="row">
 					<header class="masthead masthead-part d-flex align-items-center justify-content-center" style="background-image: url(<?=$wpblog_fetrdimg; ?>)">
-				    	<p class="blender-pro-bold main-slider-title page px-2" id="main-title"><?=get_the_title()?></p>
+				    	<p class="blender-pro-bold main-slider-title page px-2" id="main-title"><?//=get_the_title()?></p>
 				  	</header>					
 				</div>
 			</div>

@@ -1854,14 +1854,14 @@ function vc_shortcode_news_home ( $atts ){
 											$html .= '<span class="d-block h5 montserrat-light">'.get_the_date( 'M' ).'</span>';
 											$html .= '<span class="d-block montserrat-medium">'.get_the_date( 'Y' ).'</span>';
 										$html .= '</div>';
-										$html .= '<a href="'.home_url().'"/news-events/">';
+										$html .= '<a href="'.home_url().'/news-events/">';
 										$html .= '<img src="'.get_the_post_thumbnail_url().'" alt="Featured News And Events" class="img-fluid w-100 mb-3" />';
 										$html .= '</a>';
-										$html .= '<a href="'.home_url().'"/news-events/">';
+										$html .= '<a href="'.home_url().'/news-events/">';
 										  $html .= '<p class="text-blue montserrat-medium home-news-events-main">'.get_the_title().'</p>';
 										$html .= '</a>';
 										$html .= '<p class="text-grey lato-regular home-news-events-main mb-4">'.get_the_content().'</p>';
-										$html .= '<a class="text-blue-dark montserrat-medium mb-4 d-block" href="'.get_the_permalink().'">READ MORE';
+										$html .= '<a class="text-blue-dark montserrat-medium mb-4 d-block" href="'.home_url().'/news-events/">READ MORE';
 										    $html .= '<span class="fa fa-angle-double-right"></span>';
 										$html .= '</a>';
 									endwhile; 
@@ -1887,14 +1887,14 @@ function vc_shortcode_news_home ( $atts ){
   												$html .= '<span class="d-block montserrat-light">'.get_the_date( 'M' ).'</span>';
   												$html .= '<span class="d-block small montserrat-medium">'.get_the_date( 'Y' ).'</span>';
 											$html .= '</div>';
-									  		$html .= '<a href="'.home_url().'"/news-events/">';
+									  		$html .= '<a href="'.home_url().'/news-events/">';
 									    		$html .= '<img src="'.get_the_post_thumbnail_url().'" alt="News & Events News-Event-ID-'.get_the_ID().'" class="img-fluid w-100 mb-3">';
 									  		$html .= '</a>';
-									  		$html .= '<a href="'.home_url().'"/news-events/">';
+									  		$html .= '<a href="'.home_url().'/news-events/">';
 									  		  	$html .= '<p class="text-blue montserrat-medium home-news-events-last-four mb-1">'.get_the_title().'</p>';
 									  		$html .= '</a>';
 									  			$html .= '<p class="text-grey lato-regular home-news-events-last-four mb-5 mb-md-2 _content">'.get_the_content().'</p>';
-									  		$html .= '<a class="btn btn-link pl-0 mb-5 text-blue montserrat-medium d-none d-md-inline-block" href="'.home_url().'"/news-events/">READ MORE';
+									  		$html .= '<a class="btn btn-link pl-0 mb-5 text-blue montserrat-medium d-none d-md-inline-block" href="'.home_url().'/news-events/">READ MORE';
 									    		$html .= '<span class="fa fa-angle-double-right"></span>';
 									 		$html .= '</a>';
 									 	$html .= '</div>';
@@ -1938,7 +1938,7 @@ function vc_shortcode_news_featured ( $atts ){
    				$html .= '<img src="'.get_the_post_thumbnail_url().'" alt="Featured News And Events" class="img-fluid w-100 mb-3" />';
 	  			$html .= '</div>';
 				$html .= '<div class="col-md-6 text-center text-md-left">';
-				    $html .= '<p class="text-blue-dark montserrat-medium">'.get_the_title().'</p>';
+				    $html .= '<p class="text-blue montserrat-bold">'.get_the_title().'</p>';
 	    			$html .= '<p class="text-grey lato-regular">'.get_the_content().'</p>';
     				$html .= '<a href="'.get_the_permalink().' class="btn btn-link montserrat-medium pl-0 text-blue-dark">READ MORE <span class="fa fa-angle-double-right"></span> </a>';
   				$html .= '</div>';
@@ -1993,7 +1993,7 @@ function vc_shortcode_events ( $atts ){
               								$html .= '<div class="row">';
                 								$html .= '<div class="col px-1 hide-show-more py-3">';
                   									$html .= '<p class="event-pub-title event-pub-label montserrat-bold mb-0">'.get_the_title().'</p>';
-                  									$html .= '<p class="event-pub-date event-pub-label montserrat-bold">'.get_the_date( 'F jS, Y' ).'</p>';
+                  									$html .= '<p class="event-pub-date event-pub-label montserrat-bold"></p>';
                   									$html .= '<p class="event-pub-description event-pub-label lato-light mb-3 _content">'.get_the_content().'</p>';
                   									$html .= '<a class="event-pub-read-more montserrat-medium" href="'.get_the_permalink().'">READ MORE<span class="fa fa-angle-double-right"></span></a>';
                     							$html .='</div>';
@@ -2127,7 +2127,7 @@ function vc_shortcode_careers ( $atts ){
                       								if( $jobs->have_posts() ) :
                         								while( $jobs->have_posts() ) :
                           									$jobs->the_post();
-                      											$html .= '<option value="'.get_the_permalink().'"'.get_the_title() . ' (' . get_post_meta(get_the_ID(), 'careers_location', true) . ')</option>';
+                      											$html .= '<option value="'.get_the_permalink().'">'.get_the_title() . ' (' . get_post_meta(get_the_ID(), 'careers_location', true) . ')</option>';
                     									endwhile; 
                     								endif;
                   						$html .= '</select>';
@@ -2146,7 +2146,7 @@ function vc_shortcode_careers ( $atts ){
                       								if( $jobs->have_posts() ) :
                         								while( $jobs->have_posts() ) :
                           									$jobs->the_post();
-                      											$html .= '<option value="'.get_the_permalink().'"'.get_the_title() . ' (' . get_post_meta(get_the_ID(), 'careers_location', true) . ')</option>';
+                      											$html .= '<option value="'.get_the_permalink().'">'.get_the_title() . ' (' . get_post_meta(get_the_ID(), 'careers_location', true) . ')</option>';
                     									endwhile; 
                     								endif;
                   							$html .= '</select>';
@@ -2407,7 +2407,7 @@ function vc_shortcode_research ( $atts ){
       						while( $papers->have_posts() ) :
         						$papers->the_post();
         						$link = get_post_meta( get_the_ID(), 'white_papers_url', true );
-        							$html .= '<a href="<?php echo $link; ?>" target="_blank" class="text-blue montserrat-medium p-3 d-block">'.get_the_title().'</a>';
+        							$html .= '<a href="'.$link.'" target="_blank" class="text-blue montserrat-medium p-3 d-block">'.get_the_title().'</a>';
     								if( $i < $papers->post_count ) :
         								$html .= '<hr />';
         							$i++;
@@ -2434,15 +2434,7 @@ function vc_shortcode_research ( $atts ){
 					    	endfor;
 					    $html .= '</div>';
 					$html .= '</div>';
-        		$html .= '</div>';
-        		$html .= '<div class="col-12 pb-5">';
-          			$html .= '<div class="col-12">';
-            			$html .= '<p class="section-title text-center my-0">Some of our Clients</p>';
-          			$html .= '</div>';
-          			$html .= '<div class="col-12">';
-          				do_shortcode( '[jssor-slider alias="carousel-slider.slider"]' );
-          			$html .= '</div>';
-        		$html .= '</div>';
+        		$html .= '</div>';        		
     	$html .= '</div>';
 	$html .= '</div>';
 

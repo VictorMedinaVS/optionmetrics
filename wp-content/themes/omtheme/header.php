@@ -40,11 +40,11 @@
 			</div>
 		</nav>
 		<?php do_action( 'visualcomposerstarter_after_header_menu' ); ?>
-		<?php if ( is_singular() && apply_filters( 'visualcomposerstarter_single_image', true ) ) : ?>
+		<?php /*if ( is_singular() && apply_filters( 'visualcomposerstarter_single_image', true ) ) : ?>
 			<div class="header-image">
 				<?php visualcomposerstarter_header_featured_content(); ?>
 			</div>
-		<?php endif; ?>
+		<?php endif; */?>
 	<?php visualcomposerstarter_hook_after_header(); ?>
 <?php endif;
 

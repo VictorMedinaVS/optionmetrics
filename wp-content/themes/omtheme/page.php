@@ -7,7 +7,10 @@
  * @since Visual Composer Starter 1.0
  */
 
-get_header(); ?>
+get_header();
+get_template_part( 'template-parts/page', 'hero' );
+
+?>
 	<div class="<?php echo esc_attr( visualcomposerstarter_get_content_container_class() ); ?>">
 		<div class="content-wrapper">
 			<div class="row">
