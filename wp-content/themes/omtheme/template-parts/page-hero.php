@@ -10,7 +10,7 @@
   if( is_page( 'terms-of-use' ) ) $tag = 'terms-of-use';
   if( is_page( 'careers' ) ) $tag = 'careers';
   if( is_page( 'support' ) ) $tag = 'support';
-  if( is_single() ) echo $tag = get_the_category()[0]->slug;
+  if( is_single() ) $tag = get_the_category()[0]->slug;
 
   $args = array(
     'category_name' => 'home-slider',
@@ -20,9 +20,11 @@
       'terms'       => $tag
     )));
     $header = get_posts( $args );
-    setup_postdata( $header );
-  
-    $wpblog_fetrdimg = wp_get_attachment_url( get_post_thumbnail_id($post->ID) );
+    
+    $wpblog_fetrdimg = get_the_post_thumbnail_url($header[0]->ID);
+    setup_postdata( $header[0] );
+        
+    
     
 ?>
 
