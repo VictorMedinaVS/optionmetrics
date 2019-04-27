@@ -20,15 +20,13 @@
       'terms'       => $tag
     )));
     $header = get_posts( $args );
-    
+
     $wpblog_fetrdimg = get_the_post_thumbnail_url($header[0]->ID);
     setup_postdata( $header[0] );
         
-    
-    
+    if( !is_page( 'homepage' )){ 
 ?>
-
-  <header class="masthead masthead-part d-flex align-items-center justify-content-center" style="background-image: url(<?=$wpblog_fetrdimg; ?>)">
+ <header class="masthead masthead-part d-flex align-items-center justify-content-center" style="background-image: url(<?=$wpblog_fetrdimg; ?>)">
     <p class="blender-pro-bold main-slider-title page px-2" id="main-title"><?= $header[0]->post_title; ?></p>
   </header>
 
@@ -39,3 +37,11 @@
     mainTitle.classList.add('main-get-started-title');
   }
 </script>
+
+
+<?php
+     }
+    
+?>
+
+ 
