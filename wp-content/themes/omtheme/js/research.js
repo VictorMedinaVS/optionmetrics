@@ -218,4 +218,46 @@ jQuery(function ($) {
         }
     });
 
+    $('body').scrollspy({
+                target: '#scroll-spy',
+                offset: 70
+            });
+
+            $('.btn-down-arrow a, #view-our-research-papers, a#view-our-research-papers').click(function(event){
+                // Make sure this.hash has a value before overriding default behavior
+                if (this.hash !== "") {
+                    // Prevent default anchor click behavior
+                    event.preventDefault();
+
+                    // Store hash (#)
+                    var hash = this.hash;
+
+                    // Ensure no section has relevant class
+                    $('section').removeClass("focus");
+
+                    // Add class to target
+                    $(hash).addClass("focus");
+
+                    // Remove thy class after timeout
+                    setTimeout(function(){
+                        $(hash).removeClass("focus");
+                    }, 2000);
+
+                    // Using jQuery's animate() method to add smooth page scroll
+                    // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area (the speed of the animation)
+                    $('html, body').animate({
+                        scrollTop: jQuery(hash).offset().top - 69
+                    }, 600, function(){
+
+                        // Add hash (#) to URL when done scrolling (default click behavior)
+                        window.location.hash = hash;
+                    });
+
+                    // Collapse Navbar for mobile view
+                    $(".navbar-collapse").collapse('hide');
+                }
+
+            });
+
+
 });

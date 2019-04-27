@@ -10,12 +10,13 @@
 get_header();
 get_template_part( 'template-parts/page', 'hero' );
 
+if( !is_page( 'homepage' )){ $class = 'box-content'; } else { $class=""; }
 ?>
 	<div class="<?php echo esc_attr( visualcomposerstarter_get_content_container_class() ); ?>">
 		<div class="content-wrapper">
 			<div class="row">
 				<div class="<?php echo esc_attr( visualcomposerstarter_get_maincontent_block_class() ); ?>">
-					<div class="main-content ">
+					<div class="main-content <?php echo $class; ?>">
 						<?php
 						// Start the loop.
 						while ( have_posts() ) : the_post();

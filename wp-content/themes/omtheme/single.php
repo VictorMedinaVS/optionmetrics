@@ -17,7 +17,7 @@ $cat = get_the_category()[0]->slug;
 
 
 ?>
-<div class="container pb-single-container bg-white">
+<div class="container pb-single-container bg-white box-content">
 	<div class="row">
       	<div class="col-12 p-3 p-md-4 p-lg-5">
 	        <a href="javascript:history.back()" class="btn btn-link text-left text-grey-light pl-lg-5">

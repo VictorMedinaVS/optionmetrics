@@ -1940,7 +1940,7 @@ function vc_shortcode_news_featured ( $atts ){
 				$html .= '<div class="col-md-6 text-center text-md-left">';
 				    $html .= '<p class="text-blue montserrat-bold">'.get_the_title().'</p>';
 	    			$html .= '<p class="text-grey lato-regular">'.get_the_content().'</p>';
-    				$html .= '<a href="'.get_the_permalink().' class="btn btn-link montserrat-medium pl-0 text-blue-dark">READ MORE <span class="fa fa-angle-double-right"></span> </a>';
+    				$html .= '<a href="'.get_the_permalink().'" class="btn btn-link montserrat-medium pl-0 text-blue-dark">READ MORE <span class="fa fa-angle-double-right"></span> </a>';
   				$html .= '</div>';
 			$html .= '</div>';
 			endwhile; 
