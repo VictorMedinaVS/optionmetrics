@@ -13,9 +13,6 @@ get_template_part( 'template-parts/page', 'hero' );
 the_post();
 $cat = get_the_category()[0]->slug;
 
-
-
-
 ?>
 <div class="container pb-single-container bg-white box-content">
 	<div class="row">

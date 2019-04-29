@@ -1991,7 +1991,7 @@ function vc_shortcode_events ( $atts ){
           							$html .= '<tr>';
             							$html .= '<td>';
               								$html .= '<div class="row">';
-                								$html .= '<div class="col px-1 hide-show-more py-3">';
+                								$html .= '<div class="col px-1 py-3">';
                   									$html .= '<p class="event-pub-title event-pub-label montserrat-bold mb-0">'.get_the_title().'</p>';
                   									$html .= '<p class="event-pub-date event-pub-label montserrat-bold"></p>';
                   									$html .= '<p class="event-pub-description event-pub-label lato-light mb-3 _content">'.get_the_content().'</p>';
@@ -2007,24 +2007,6 @@ function vc_shortcode_events ( $atts ){
     		$html .='</div>';
   		$html .='</div>';
 	$html .='</div>';
-
-	/*$sc_args = '[wp-datatable id="news" fat="LEVEL"]
-	search: true,
-	responsive: true,
-	pageLength: 6,
-	lengthChange: false,
-	bInfo: false,
-	language: {
-	  search: "",
-	  searchPlaceholder: "Search Events...",
-	  paginate: {
-	    next: "<span class=\"fa fa-chevron-right\"></span>",
-	    previous: "<span class=\"fa fa-chevron-left\"></span>",
-	  }
-	},
-	[/wp-datatable]';
-    echo do_shortcode( $sc_args );*/
-
   return $html;
 
 }
@@ -2065,12 +2047,12 @@ function vc_shortcode_news ( $atts ){
 	          				while( $eventPosts->have_posts() ) :
 	            				$eventPosts->the_post();
 		      					$html .= '<tr>';
-			        				$html .= '<td>';
+			        				$html .= '<td style="padding-bottom:1rem;">';
 			          					$html .= '<div class="row">';
-			            					$html .= '<div class="col-6 col-md-5">';
+			            					$html .= '<div class="col-md-6 text-center text-md-left">';
 			              						$html .= '<img src="'.get_the_post_thumbnail_url().'" alt="News & Events News-Event-ID-'.get_the_ID().'" class="img-fluid w-100 mb-3">';
 			            					$html .= '</div>';
-			            					$html .= '<div class="col-6 col-md-7 hide-show-more">';
+			            					$html .= '<div class="col-md-6 text-center text-md-left">';
 			              						$html .= '<p class="text-blue montserrat-bold news-mini mb-2">'.get_the_title().'</p>';
 			              						$html .= '<p class="text-grey-dark lato-regular news-mini mb-2 _content">'.get_the_content().'</p>';
 			              						$html .= '<a class="text-blue montserrat-medium" href="'.get_the_permalink().'"> READ MORE <span class="fa fa-angle-double-right"></span> </a>';
@@ -2085,23 +2067,6 @@ function vc_shortcode_news ( $atts ){
     		$html .= '</div>';
   		$html .= '</div>';
 	$html .= '</div>'; 
-	/*$sc_args = '[wp-datatable id="events" fat="LEVEL"]
-    	search: true,
-    	responsive: true,
-    	pageLength: 4,
-    	lengthChange: false,
-    	bInfo: false,
-    	language: {
-      		search: "",
-      		searchPlaceholder: "Search News...",
-      		paginate: {
-        		next: "<span class=\"fa fa-chevron-right\"></span>",
-        		previous: "<span class=\"fa fa-chevron-left\"></span>",
-      		}
-    	}
-  	[/wp-datatable]';
-  	echo do_shortcode( $sc_args );*/
-
   return $html;
 
 }
@@ -2278,7 +2243,7 @@ function ajax_filter_get_posts($category)
                 $html_post .= '<a href="' . $link . '" class="btn btn-link text-grey-light montserrat-regular mb-3">READ MORE<span class="fa fa-angle-double-right"></span></a>';
             } else {
                 $html_post = '<div class="row">';
-                $html_post .= '<div class="col px-1 hide-show-more py-3">';
+                $html_post .= '<div class="col px-1 py-3">';
                 $html_post .= '<p class="event-pub-title event-pub-label montserrat-bold mb-0">' . $post_date . '</p>';
                 $html_post .= '<p class="event-pub-date event-pub-label montserrat-bold">' . $title . '</p>';
                 $html_post .= '<p class="event-pub-description event-pub-label lato-light mb-3 _content">' . $content . '</p>';
@@ -2313,82 +2278,189 @@ function ajax_filter_get_posts($category)
 function vc_shortcode_research ( $atts ){
 
     $html = '<div class="row">';
-        $html .= '<div class="col-12 d-none d-md-block">';
+    	$html .= '<div class="col-12 d-none d-md-block">';
          	$html .= '<p class="our-most-research-title montserrat-bold">Our Most Recent Research</p>';
         $html .= '</div>';
+        $html .= '<div class="col-12 col-md-7">';
+          	$html .= '<p class="text-blue lato-regular py-md-4 text-center d-none" style="max-width:880px;">OptionMetrics data is an essential component of many studies performed by both academics and practitioners. Below is a partial list of academic papers that used OptionMetrics data:</p>';
+          	$html .= '<div class="text-center d-md-none"><a href="#papers-view" class="btn btn-yellow mt-3 mb-4 -md-none btn-optionmetrics" id="view-our-research-papers">View Our Research Papers</a></div>';
+        $html .= '</div>';
+        $html .= '<div class="col-12 px-4 pb-5 text-center d-md-none">';
+        	
+        $html .= '</div>';
+
+        $html .= '<div class="col-12 px-4 d-none d-md-block hide-show-more text-center">';
+          	// RESEARCH FEATURED SECTION
+			$args = array(
+				'category_name'   => 'research',
+				'orderby'         => 'rand',
+				'showposts'       => 1,
+				'tag_slug__in'    => array( 'featured' )
+			);
+			$ft_post = new WP_Query( $args );
+			if( $ft_post->have_posts() ) :
+				while( $ft_post->have_posts() ) :
+			  		$ft_post->the_post();
+					$html .= '<p class="text-blue h4 montserrat-regular mx-auto" style="max-width:700px;">'.get_the_title().'</p>';
+					$html .= '<p class="text-grey-light lato-italic text-center my-4">'.get_the_date( "F jS, Y" ).'</p>';
+					$html .= '<p id="research-top" class="lato-regular mx-auto px-md-0" style="max-width:1100px;">'.get_the_content().'<a class="text-blue-dark montserrat-medium ml-1" href="'.get_the_permalink().'"> READ MORE <span class="fa fa-angle-double-right"></span> </a> </p>';
+					$html .= '<a href="#papers-view" class="btn btn-yellow mt-3 mb-4" id="view-our-research-papers">View Our Research Papers</a>';
+				endwhile;
+			endif;
+        $html .= '</div>';
         $html .= '<div class="col-12 col-md-7 d-md-none">';
-        	$html .= '<p class="text-blue lato-regular py-md-4 text-center" style="max-width:880px;">OptionMetrics data is an essential component of many studies performed by both academics and practitioners. Below is a partial list of academic papers that used OptionMetrics data:</p>';
-          		$html .= '<div class="text-center pt-3">';
-            		$html .= '<p class="montserrat-bold research-section-title mb-3" id="research-by-mobile">Research by:</p>';
-            			$html .= '<select class="om-select" name="type-of-research-select" id="type-of-research-select">';
-              				$html .= '<option data-toggle="tab" value="view-all">View All</option>';
-              				$html .= '<option data-toggle="tab" value="optionmetrics">Optionmetrics</option>';
-              				$html .= '<option data-toggle="tab" value="academics">Academics</option>';
-              				$html .= '<option data-toggle="tab" value="institutional-research">Institutional</option>';
-            			$html .= '</select>';
-	          		$html .= '</div>';
-        		$html .= '</div>';
-        		$html .= '<div class="col-12 px-4 pb-5 text-center hide-show-more d-md-none">';
-          			//get_template_part( 'partials/research', 'mobile' ); 
-        		$html .= '</div>'; 
-        		$html .= '<div class="col-12 px-4 d-none d-md-block hide-show-more text-center">';
-          			// RESEARCH FEATURED SECTION
+        	$html .= '<p class="research-essential-info lato-regular py-md-4" style="max-width:880px;">OptionMetrics data is an essential component of many studies performed by both academics and practitioners. Below is a partial list of academic papers that used OptionMetrics data:</p>';
+    		$html .= '<div class="text-center pt-3">';
+        		$html .= '<p class="montserrat-bold research-section-title mb-3" id="research-by-mobile">Research by:</p>';
+    			$html .= '<select class="om-select" name="type-of-research-select" id="type-of-research-select">';
+      				$html .= '<option data-toggle="tab" value="view-all">View All</option>';
+      				$html .= '<option data-toggle="tab" value="optionmetrics">Optionmetrics</option>';
+      				$html .= '<option data-toggle="tab" value="academics">Academics</option>';
+      				$html .= '<option data-toggle="tab" value="institutional-research">Institutional</option>';
+    			$html .= '</select>';
+    		$html .= '</div>';
+    		$html .= '<div class="pt-3">';
+    			// RESEARCH MOBILE SECTION
+        		$featured = get_term_by('name', 'featured', 'post_tag');
+        		$type_of_research = isset($_GET['type_of_research']) ? $_GET['type_of_research'] : 'view-all-research';
+	        	$args = array(
+					'category_name' => 'research',
+					'orderby' => 'publish_date',
+					'order' => 'DESC',
+					'tag__not_in' => $featured->term_id,
+					'tag' => $type_of_research
+				);
+        		$research_mobile = new WP_Query( $args );				     
+				$html .= '<table id="research-posts_2" class="display" style="width:100%; padding-bottom:3rem;">';
+
+				$html .= '</table>';
+  			
+          	$html .= '</div>';
+        $html .= '</div>';
+        $html .= '<div class="col-sm-7 d-none d-md-block hide-show-more pb-4">';
+        	$html .= '<p class="montserrat-bold research-section-title" id="research-by">Research by:</p>';
+  			$html .= '<nav>';
+    			$html .= '<div class="nav nav-tabs justify-content-between mb-5" id="nav-tab" role="tablist">';
+      				$html .= '<a class="nav-item research-nav-item first active" id="nav-tab-view-all" data-toggle="tab" role="tab" aria-controls="nav-view-all" aria-selected="true" name="view-all-research">View All</a>';
+      				$html .= '<a class="nav-item research-nav-item" id="nav-tab-optionmetrics" data-toggle="tab" role="tab" aria-controls="nav-optionmetrics" aria-selected="false" name="optionmetrics">Optionmetrics</a>';
+      				$html .= '<a class="nav-item research-nav-item" id="nav-tab-academics" data-toggle="tab" role="tab" aria-controls="nav-academics" aria-selected="false" name="academics-research">Academics</a>';
+      				$html .= '<a class="nav-item research-nav-item" id="nav-tab-institutional" data-toggle="tab" role="tab" aria-controls="nav-institutional" aria-selected="false" name="institutional-research">Institutional</a>';
+  		  		$html .= '</div>';
+  			$html .= '</nav>';
+  			//RESEARCH DESKTOP
+  			$featured = get_term_by('name', 'featured', 'post_tag');
+			$type_of_research = isset($_GET['type_of_research']) ? $_GET['type_of_research'] : 'view-all-research';
+			$args = array(
+				'category_name' => 'research',
+				'orderby' => 'publish_date',
+				'order' => 'DESC',
+				'tag__not_in' => $featured->term_id,
+				'tag' => $type_of_research
+			);
+
+			if (isset($_GET['query_year'])) {
+			    $year = $_GET['query_year'];
+			    if (is_numeric($year)) {
+			        $args['date_query'] = array(array(
+			            'year' => $year
+			        ));
+			    }
+			}
+
+			$research_desktop = new WP_Query($args);
+			$html .= '<div id="papers-view">';
+				$html .= '<table id="research-posts" class="display" style="width:100%;">';
+
+				$html .= '</table>';
+  			$html .= '</div>';
+  		$html .= '</div>';
+  		$html .= '<div class="col-12 col-md-5 pb-5">';
+          			//RESEARCH PAPPERS
         			$args = array(
-						'category_name'   => 'research',
-						'orderby'         => 'rand',
-						'showposts'       => 1,
-						'tag_slug__in'    => array( 'featured' )
-					);
-					$ft_post = new WP_Query( $args );
-					if( $ft_post->have_posts() ) :
-						while( $ft_post->have_posts() ) :
-					  		$ft_post->the_post();
-							$html .= '<p class="text-blue h4 montserrat-regular mx-auto" style="max-width:700px;">'.get_the_title().'</p>';
-							$html .= '<p class="text-grey-light lato-italic text-center my-4">'.get_the_date( "F jS, Y" ).'</p>';
-							$html .= '<p id="research-top" class="lato-regular mx-auto px-md-0" style="max-width:1100px;">'.get_the_content().'<a class="text-blue-dark montserrat-medium ml-1" href="'.get_the_permalink().'"> READ MORE <span class="fa fa-angle-double-right"></span> </a> </p>';
-							$html .= '<a href="#papers-view" class="btn btn-yellow mt-3 mb-4" id="view-our-research-papers">View Our Research Papers</a>';
-						endwhile;
-					endif;
+    					'category_name'   => 'white-papers',
+    					'orderby'         => 'date',
+    					'order'           => 'DESC',
+    					'showposts'       => 3
+  					);
+  					$papers = new WP_Query( $args );
+
+					$html .= '<p class="montserrat-bold research-section-title">Top Research Papers</p>';
+					$html .= '<div class="bg-light p-3 mb-3">';
+    					$i = 1;
+    					if( $papers->have_posts() ) :
+      						while( $papers->have_posts() ) :
+        						$papers->the_post();
+        						$link = get_post_meta( get_the_ID(), 'white_papers_url', true );
+        							$html .= '<a href="'.$link.'" target="_blank" class="text-blue montserrat-medium p-3 d-block">'.get_the_title().'</a>';
+    								if( $i < $papers->post_count ) :
+        								$html .= '<hr />';
+        							$i++;
+      								endif;
+      						endwhile;
+      					endif;
+      				$html .= '</div>';
+      				//RESEARCH YEARS
+      				$year_param = isset($_GET['query_year']) ? $_GET['query_year'] : 'all';
+  					$year = date('Y');
+  					$LAST = 2002;
+
+					$html .= '<p class="montserrat-bold research-section-title d-none d-sm-block mt-5">All Research Papers</p>';
+					$html .= '<div class="w-100 position-relative d-none d-sm-block" style="left:10px;">';
+					  	$html .= '<div class="timeline">';
+					  	if ($year_param == 'all') { $clsa = 'active'; } else { $clsa = ''; }
+					    $html .= '<div class="entry '.$clsa.'">';
+					      	$html .= '<p class="d-inline timeline-year montserrat-light text-blue '.$clsa.'" data-year="all" style="cursor:pointer">All years</p> </div>';
+					    	for ($i=$year; $i>=$LAST; $i--):
+					    		if ($i == $year_param) { $cls = 'active'; } else { $cls = ''; }
+					    		$html .= '<div class="entry '.$cls.'">';
+					      			$html .= '<p class="d-inline timeline-year montserrat-light text-blue '.$cls.'" data-year="'.$i.'" style="cursor:pointer">'.$i.'</p>';
+					    		$html .= '</div>';
+					    	endfor;
+					    $html .= '</div>';
+					$html .= '</div>';
+        		$html .= '</div>';        		
+
+
+
+
+        /*
+        $html .= '<div class="col-12 px-4 pb-5 text-center hide-show-more d-md-none">';
+       		$type_of_research = isset($_GET['type_of_research']) ? $_GET['type_of_research'] : 'view-all-research';
+			$args = array(
+				'category_name' => 'research',
+				'orderby' => 'publish_date',
+				'order' => 'DESC',
+				'tag' => $type_of_research
+			);
+
+			if (isset($_GET['query_year'])) {
+			    $year = $_GET['query_year'];
+			    if (is_numeric($year)) {
+			        $args['date_query'] = array(array(
+			            'year' => $year
+			        ));
+			    }
+			}
+  			$research_mobile = new WP_Query( $args );
+  			$html .= '<div id="papers-view">';
+				$html .= '<table id="research-posts" class="display" style="width:100%">';
+
+				$html .= '</table>';
+  			$html .= '</div>';
+
+        $html .= '</div>';
+        
+        
+        
+        		$html .= '<div class="col-12 px-4 d-none d-md-block hide-show-more text-center">';
+          			
         		$html .= '</div>';
         		$html .= '<div class="col-12 col-lg-7 d-none d-md-block">';
           			$html .= '<p class="research-essential-info lato-regular py-md-4" style="max-width:880px;">OptionMetrics data is an essential component of many studies performed by both academics and practitioners. Below is a partial list of academic papers that used OptionMetrics data:</p>';
         		$html .= '</div>';
         		$html .= '<div class="col-sm-7 d-none d-md-block hide-show-more pb-4">';
-        			$html .= '<p class="montserrat-bold research-section-title" id="research-by">Research by:</p>';
-          			$html .= '<nav>';
-            			$html .= '<div class="nav nav-tabs justify-content-between mb-5" id="nav-tab" role="tablist">';
-              				$html .= '<a class="nav-item research-nav-item first active" id="nav-tab-view-all" data-toggle="tab" role="tab" aria-controls="nav-view-all" aria-selected="true" name="view-all-research">View All</a>';
-              				$html .= '<a class="nav-item research-nav-item" id="nav-tab-optionmetrics" data-toggle="tab" role="tab" aria-controls="nav-optionmetrics" aria-selected="false" name="optionmetrics">Optionmetrics</a>';
-              				$html .= '<a class="nav-item research-nav-item" id="nav-tab-academics" data-toggle="tab" role="tab" aria-controls="nav-academics" aria-selected="false" name="academics-research">Academics</a>';
-              				$html .= '<a class="nav-item research-nav-item" id="nav-tab-institutional" data-toggle="tab" role="tab" aria-controls="nav-institutional" aria-selected="false" name="institutional-research">Institutional</a>';
-          		  		$html .= '</div>';
-          			$html .= '</nav>';
-          			//RESEARCH DESKTOP
-          			$featured = get_term_by('name', 'featured', 'post_tag');
-					$type_of_research = isset($_GET['type_of_research']) ? $_GET['type_of_research'] : 'view-all-research';
-					$args = array(
-    					'category_name' => 'research',
-    					'orderby' => 'publish_date',
-    					'order' => 'DESC',
-    					'tag__not_in' => $featured->term_id,
-    					'tag' => $type_of_research
-					);
-
-					if (isset($_GET['query_year'])) {
-					    $year = $_GET['query_year'];
-					    if (is_numeric($year)) {
-					        $args['date_query'] = array(array(
-					            'year' => $year
-					        ));
-					    }
-					}
-
-					$research_desktop = new WP_Query($args);
-					$html .= '<div id="papers-view">';
-        				$html .= '<table id="research-posts" class="display" style="width:100%">';
-
-        				$html .= '</table>';
-          			$html .= '</div>';
+        			
+          			
         		$html .= '</div>';
         		$html .= '<div class="col-12 col-md-5 pb-5">';
           			//RESEARCH PAPPERS
@@ -2435,7 +2507,7 @@ function vc_shortcode_research ( $atts ){
 					    $html .= '</div>';
 					$html .= '</div>';
         		$html .= '</div>';        		
-    	$html .= '</div>';
+    	$html .= '</div>';*/
 	$html .= '</div>';
 
 
@@ -2632,7 +2704,7 @@ function vc_shortcode_data_products ( $atts ){
 
     $html = '<div class="row d-md-none">';
       	$html .= '<div class="col-12 text-center">';
-        	$html .= '<p class="section-title text-blue montserrat-regular">Data Analysis Products</p>';
+        	$html .= '<p class="section-title text-blue montserrat-bold">Data Analysis Products</p>';
       	$html .= '</div>';
     $html .= '</div>';
     $html .= '<div class="row">';

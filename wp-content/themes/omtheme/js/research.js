@@ -48,8 +48,7 @@ jQuery(function ($) {
 
     $('#type-of-research-select').on('change', function () {
         var optionSelected = $("option:selected", this);
-        alert(optionSelected);
-
+        
         switch (optionSelected.val()) {
 
             case 'view-all':
@@ -66,7 +65,6 @@ jQuery(function ($) {
                 break;
 
         }
-
         ajax_query(tag, date);
     });
 
@@ -89,33 +87,6 @@ jQuery(function ($) {
         event.preventDefault();
         $('.nav-tabs').find('a#nav-tab-optionmetrics').trigger('click');
     }) ;
-/*
-    $('#nav-tab-optionmetrics').on('click', function (event) {
-        // Prevent default action - opening tag page
-        event.preventDefault();
-        // Get tag slug from title attirbute
-        var tag = 'optionmetrics-research';
-        ajax_query(tag, date);
-    });
-
-
-    $('#nav-tab-academics').on('click', function (event) {
-        // Prevent default action - opening tag page
-        event.preventDefault();
-        // Get tag slug from title attirbute
-        var tag = 'academics-research';
-        ajax_query(tag, date);
-    });
-
-    $('#nav-tab-institutional').on('click', function (event) {
-        // Prevent default action - opening tag page
-        event.preventDefault();
-        // Get tag slug from title attirbute
-        var tag = 'institutional-research';
-        ajax_query(tag, date);
-    });
-*/
-
 
     function ajax_query(tag, date) {
         data = {
@@ -151,9 +122,31 @@ jQuery(function ($) {
                     {"sType": "date-uk", "visible": false}
                 ]
             });
+            $('#research-posts_2').DataTable({
+                data: JSON.parse(response),
+                ordering: true,
+                order: [[1, "desc"]],
+                bDestroy: true,
+                search: true,
+                responsive: true,
+                pageLength: 4,
+                lengthChange: false,
+                bInfo: false,
+                language: {
+                    searchPlaceholder: "Search...",
+                    search: "",
+                    paginate: {
+                        next: "<span class=\"fa fa-chevron-right\"></span>",
+                        previous: "<span class=\"fa fa-chevron-left\"></span>",
+                    }
+                },
+                "aoColumns": [
+                    {title: "Posts"},
+                    {"sType": "date-uk", "visible": false}
+                ]
+            });
         });
     }
-
 
     $('#events-year-filter').on('change', function () {
         var date = $("option:selected", this).val();
@@ -245,8 +238,9 @@ jQuery(function ($) {
 
                     // Using jQuery's animate() method to add smooth page scroll
                     // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area (the speed of the animation)
+                    var altura = jQuery(hash).offset().top;
                     $('html, body').animate({
-                        scrollTop: jQuery(hash).offset().top - 69
+                        scrollTop: altura - 69
                     }, 600, function(){
 
                         // Add hash (#) to URL when done scrolling (default click behavior)
@@ -258,6 +252,4 @@ jQuery(function ($) {
                 }
 
             });
-
-
 });
